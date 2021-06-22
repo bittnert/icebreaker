@@ -7,13 +7,13 @@ all: $(PROJ).bin
 #	gtkwave test.vcd
 
 %.sim: $(SIM_SRC) %_tb.cpp  %.a
-	$(CXX) $(addprefix -I, $(INC_DIR)) $^ -o $*.sim
+	$(CXX) $(addprefix -I, $(INC_DIR)) -DTRACE_EXECUTION  $^ -o $*.sim
 	./$*.sim
 	gtkwave $*.sim.vcd
 	
 
 %.a: $(V_SRC)
-	verilator -Wall --trace --prefix $* --build --top-module $* --cc $(V_SRC)
+	verilator -Wall --trace --prefix $* --build -DTRACE_EXECUTION --top-module $* --cc $(V_SRC)
 	cp obj_dir/$*__ALL.a ./$*.a
 
 %.json: $(V_SRC)

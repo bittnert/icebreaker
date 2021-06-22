@@ -58,13 +58,14 @@ public:
 
 	void tick(void)
 	{
+		printf("tick start");
 		tickcount++;
 
 		dut->CLK = 0;
 		dut->eval();
-
 		if (trace) 
 		{
+			printf("dumping");
 			trace-> dump(10*tickcount - 2);
 		}
 

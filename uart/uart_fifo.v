@@ -21,28 +21,33 @@ assign empty = empty_in;
 assign dataout = temp;
 always@(posedge clk)
 begin
-	temp <= mem[rp];
+//	dataout <= mem[rp];
+	if (empty_in) begin
+		temp <= datain;
+	end else begin
+		temp <= mem[rp];
+	end
 end
 // memory write in
 always@(posedge clk) begin
     if(wr && ~full_in) mem[wp]<=datain;
 end
 // memory write pointer increment
-always@(posedge clk or negedge rst) begin
+always@(posedge clk) begin
     if(!rst) wp<=0;
     else begin
       if(wr && ~full_in) wp<= wp+1'b1;
     end
 end
 // memory read pointer increment
-always@(posedge clk or negedge rst)begin
+always@(posedge clk) begin
     if(!rst) rp <= 0;
     else begin
       if(rd && ~empty_in) rp <= rp + 1'b1;
     end
 end
 // Full signal generate
-always@(posedge clk or negedge rst) begin
+always@(posedge clk) begin
     if(!rst) full_in <= 1'b0;
     else begin
       if( (~rd && wr)&&((wp==rp-1)||(rp==4'h0&&wp==4'hf)))
@@ -51,7 +56,7 @@ always@(posedge clk or negedge rst) begin
     end
 end
 // Empty signal generate
-always@(posedge clk or negedge rst) begin
+always@(posedge clk) begin
     if(!rst) empty_in <= 1'b1;
     else begin
       if((rd&&~wr)&&(rp==wp-1 || (rp==4'hf&&wp==4'h0)))
