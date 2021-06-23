@@ -21,7 +21,8 @@ assign empty = empty_in;
 assign dataout = temp;
 always@(posedge clk)
 begin
-//	dataout <= mem[rp];
+// If empty bypass memory for output as Memory will 
+// be delayed by 2 clock cycles (1 for write and 1 for read)
 	if (empty_in) begin
 		temp <= datain;
 	end else begin
