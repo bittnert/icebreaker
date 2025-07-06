@@ -1,4 +1,10 @@
-module uart_rx (input CLK, input rst_n, output reg rx_ready, output reg[7:0] rx_data, input[20:0] prescaler_in, input RX, output reg framing_error);
+module uart_rx (input CLK, 
+				input rst_n, 
+				output reg rx_ready, 
+				output reg[7:0] rx_data, 
+				input[20:0] prescaler_in, 
+				input RX, 
+				output reg framing_error);
 
 	localparam
 		ST_IDLE = 2'b00,
@@ -22,6 +28,7 @@ uart_baud_gen baud_gen(.CLK(CLK), .rst_n(rst_out), .prescaler(prescaler_out), .b
 		if (rst_n == 1'b0) begin
 			state <= ST_IDLE;
 			rst_out <= 0;
+			rx_ready <= 0;
 		end else begin
 			case (state)
 				ST_IDLE: begin

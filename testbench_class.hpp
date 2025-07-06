@@ -14,6 +14,7 @@ public:
 	{
 		Verilated::traceEverOn(true);
 		dut = new MODULE;
+		trace = NULL;
 		tickcount = 0;
 	}
 
@@ -25,10 +26,10 @@ public:
 
 	void reset()
 	{
-		dut->rst = 1;
-		this->tick();
-		this->tick();
 		dut->rst = 0;
+		this->tick();
+		this->tick();
+		dut->rst = 1;
 	}
 
 	void opentrace (const char *vcdname) 
@@ -58,14 +59,11 @@ public:
 
 	void tick(void)
 	{
-		printf("tick start");
 		tickcount++;
-
 		dut->CLK = 0;
 		dut->eval();
 		if (trace) 
 		{
-			printf("dumping");
 			trace-> dump(10*tickcount - 2);
 		}
 

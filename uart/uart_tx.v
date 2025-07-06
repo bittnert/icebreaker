@@ -35,10 +35,11 @@ uart_baud_gen baud_gen(.CLK(CLK), .rst_n(rst_out), .prescaler(prescaler), .baud_
 						tx_data <= data;
 						tx_count <= 0;
 						rst_out <= 1;
+						int_tx_ready <= 0;
 					end else begin
 						rst_out <= 0;
+						int_tx_ready <= 1;
 					end
-					int_tx_ready <= 1;
 					prescaler <= prescaler_in;
 				end
 				ST_START: begin
@@ -60,6 +61,7 @@ uart_baud_gen baud_gen(.CLK(CLK), .rst_n(rst_out), .prescaler(prescaler), .baud_
 				ST_STOP: begin
 					if (baud_tick == 1'b1) begin
 						tx_state <= ST_IDLE;
+						int_tx_ready <= 1;
 					end
 				end
 			endcase

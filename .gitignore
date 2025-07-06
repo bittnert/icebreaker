@@ -1,0 +1,6 @@
+.vscode
+.vscode-ctags
+*.vcd
+*.sim
+*.log
+**/obj_dir/

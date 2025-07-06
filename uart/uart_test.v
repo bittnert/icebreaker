@@ -1,6 +1,6 @@
 
 
-module uart_test (input CLK, output TX, input BTN_N );
+module uart_test (input CLK, output P1A1, input BTN_N );
 
 wire empty; 
 wire cts;
@@ -44,7 +44,7 @@ end
 
 
 /* verilator lint_off PINCONNECTEMPTY */
-uart_tx d0(.CLK(CLK), .TX(TX), .rts(~empty), .cts(cts), .data(data_out), .rst(rst), .tx_active());
+uart_tx d0(.CLK(CLK), .rst_n(rst), .TX(P1A1), .data(data_out), .tx_ready(~empty), .tx_active(), .prescaler_in(21'h68));
 uart_fifo d6(.datain(data_in), .rd(cts), .wr(wren), .clk(CLK), .dataout(data_out), .rst(BTN_N),  .full(full), .empty(empty));
 //uart_fifo d1(.CLK(CLK), .empty(empty), .rden(cts), .wren(wren), .data_in(data_in), .data_out(data_out), .rst(rst), .full(full));
 /*lint_on*/
