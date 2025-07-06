@@ -1,0 +1,6 @@
+hart_ids: [0]
+hart0:
+  ISA: RV32I_Zicsr
+  exclude_tests:
+    - rv32i_m/privilege/src/misalign2-jalr-01.S
+    - rv32i_m/privilege/src/misalign-jalr-01.S
