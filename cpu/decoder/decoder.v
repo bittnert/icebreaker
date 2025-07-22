@@ -6,23 +6,24 @@ module decoder (
         input [31:0] instr,
         input [31:0] branch_pc,
         input branch_taken,
-        output reg [4:0] rd_addr,
-        output reg [4:0] rs1_addr,
-        output reg [4:0] rs2_addr,
+        output [4:0] rd_addr,
+        output [4:0] rs1_addr,
+        output [4:0] rs2_addr,
         output reg [31:0] imm_val,
         output reg [31:0] pc /*verilator public_flat_rd*/,
         output reg imm_mux_sel,
-        output [2:0] alu_sel,
-        output [2:0] branch_sel,
+        output reg [2:0] alu_sel,
+        output reg [2:0] branch_sel,
         output reg alu_aux,
         //output [6:0] func7,
         output reg mem_en,
         output reg mem_wr,
         output reg reg_en,
-        output reg alu_a_sel,
+        output alu_a_sel,
         output reg mem_addr_sel,
         output reg[2:0] mem_size,
-        output reg[1:0] rd_in_sel
+        output reg[1:0] rd_in_sel,
+        output reg fetch_stage
     );
 
 
@@ -67,6 +68,7 @@ module decoder (
             reg_en <= 0;
             pc <= 0;
             mem_size <= 3'b010;
+            fetch_stage <= 0;
         end else begin
             case (state)
                 ST_FETCH: begin
@@ -74,6 +76,7 @@ module decoder (
                     mem_wr <= 0;
                     state <= ST_DECODE;
                     reg_en <= 0;
+                    fetch_stage <= 0;
                 end
                 ST_DECODE: begin
                     mem_en <= 0;
@@ -81,7 +84,8 @@ module decoder (
                     local_instr <= instr;
                     state <= ST_OP;
                     reg_en <= 0;
-                    mem_addr_sel <= store | load;
+                    //mem_addr_sel <= store | load;
+                    mem_addr_sel <= 0;
                 end
                 ST_OP: begin
                     state <= ST_LD_ST;
@@ -89,11 +93,15 @@ module decoder (
                     mem_addr_sel <= store | load;
                     //We have to set the mem_size one clock cycle earlier so memory has time to load the data
                     mem_size <= loc_mem_size;
+                    //mem_en <= store | load;
+                    //mem_wr <= store;
                 end
                 ST_LD_ST: begin
                     mem_addr_sel <= store | load;
                     mem_en <= store | load;
                     mem_wr <= store;
+                    //mem_en <= 0;
+                    //mem_wr <= 0;
                     state <= ST_WRITE;
                     reg_en <= reg_write;
                 end
@@ -108,6 +116,7 @@ module decoder (
                         pc <= {branch_pc[31:2], 2'b00};
                     else
                         pc <= pc + 4;
+                    fetch_stage <= 1;
                 end
                 default: begin
                     state <= ST_FETCH;
@@ -125,7 +134,7 @@ module decoder (
                 alu_sel = 3'b000;
                 alu_aux = 0;
                 imm_type = `U_TYPE;
-                branch_sel = 0;
+                branch_sel = `COMPARE_INV;
                 branch = 0;
                 rd_in_sel = 1;
                 store = 0;
@@ -141,7 +150,7 @@ module decoder (
                 //alu_aux = local_instr[30];
                 alu_aux = (local_instr[14:12] == 3'b101) ?local_instr[30] : 0;
                 imm_type = `I_TYPE;
-                branch_sel = 0;
+                branch_sel = `COMPARE_INV;
                 branch = 0;
                 rd_in_sel = 2;
                 store = 0;
@@ -156,7 +165,7 @@ module decoder (
                 alu_sel = local_instr[14:12];
                 alu_aux = local_instr[30];
                 imm_type = `I_TYPE;
-                branch_sel = 0;
+                branch_sel = `COMPARE_INV;
                 branch = 0;
                 rd_in_sel = 2;
                 store = 0;
@@ -172,7 +181,8 @@ module decoder (
                 alu_sel = 3'b000;
                 alu_aux = 0;
                 imm_type = `U_TYPE;
-                branch_sel = 0;
+                branch_sel = `COMPARE_INV;
+
                 branch = 0;
                 rd_in_sel = 2;
                 store = 0;
@@ -204,7 +214,7 @@ module decoder (
                 alu_sel = 3'b000;
                 alu_aux = 0;
                 imm_type = `J_TYPE;
-                branch_sel = 0;
+                branch_sel = `COMPARE_INV;
                 branch = 1;
                 rd_in_sel = 0;
                 store = 0;
@@ -220,7 +230,7 @@ module decoder (
                 alu_sel = 3'b000;
                 alu_aux = 0;
                 imm_type = `I_TYPE;
-                branch_sel = 0;
+                branch_sel = `COMPARE_INV;
                 branch = 1;
                 rd_in_sel = 0;
                 store = 0;
@@ -236,7 +246,7 @@ module decoder (
                 alu_sel = 3'b000;
                 alu_aux = 0;
                 imm_type = `S_TYPE;
-                branch_sel = 0;
+                branch_sel = `COMPARE_INV;
                 branch = 0;
                 rd_in_sel = 2;
                 store = 1;
@@ -252,7 +262,7 @@ module decoder (
                 alu_sel = 3'b000;
                 alu_aux = 0;
                 imm_type = `I_TYPE;
-                branch_sel = 0;
+                branch_sel = `COMPARE_INV;
                 branch = 0;
                 rd_in_sel = 3;
                 store = 0;
@@ -267,7 +277,7 @@ module decoder (
                 alu_sel = 3'b000;
                 alu_aux = 0;
                 imm_type    = `B_TYPE;
-                branch_sel = 0;
+                branch_sel = `COMPARE_INV;
                 branch = 0;
                 store = 0;
                 rd_in_sel = 0;

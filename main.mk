@@ -3,6 +3,7 @@
 #	./output
 #	gtkwave test.vcd
 
+PACKAGE:="sg48"
 
 %.sim: $(SIM_SRC) %_tb.cpp  %.a 
 	$(CXX) $(addprefix -I, $(INC_DIR)) -g -DTRACE_EXECUTION  $^ -o $*.sim
@@ -25,8 +26,8 @@
 %.out: %.S
 	riscv64-linux-gnu-as $^ -o $@
 
-%.json: $(V_SRC)
-	yosys -ql $*.log -p 'synth_ice40 -abc2 -top $* -json $@' $^
+%.json: $(V_SRC) #$(MEM_FILE)
+	yosys -ql $*.log -p 'synth_ice40 -abc2 -dsp -spram -top $* -json $@' $^
 
 %.asc: $(PIN_DEF) %.json
 	nextpnr-ice40 --$(DEVICE) $(if $(PACKAGE), --package $(PACKAGE)) $(if $(FREQ),--freq $(FREQ)) --json $(filter-out $<,$^) --pcf $< --asc $@

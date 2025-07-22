@@ -1,5 +1,5 @@
 
-module mux4#(SIZE=32)(input[SIZE - 1:0] a
+module mux4#(parameter SIZE=32)(input[SIZE - 1:0] a
                     , input[SIZE-1:0] b
                     , input[SIZE-1:0] c
                     , input[SIZE-1:0] d

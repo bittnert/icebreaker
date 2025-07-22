@@ -8,37 +8,53 @@ module alu(input[31:0] a,
     wire signed [31:0] signed_a = a;
     wire signed [31:0] signed_b = b;
 
+    reg [31:0] add_result, sub_result, shl_result, shr_result;
+    reg [31:0] or_result, xor_result, and_result, slt_result, sltu_result;
+    reg [31:0] srl_result, sra_result;
+
     always @(*) begin
+
+        add_result = a + b;
+        sub_result = a - b;
+        shl_result = a << b[4:0];
+        or_result = a | b;
+        xor_result = a ^ b;
+        and_result = a & b;
+        slt_result = (signed_a < signed_b) ? 32'b1 : 32'b0;
+        sltu_result = (a < b) ? 32'b1: 32'b0;
+        srl_result = a >> b[4:0];
+        sra_result = signed_a >>> b[4:0];
+
         case (op[2:0])
             `ALU_ADD: begin
                 if (aux == 1'b1) begin 
-                    result = a - b;
+                    result = sub_result;
                 end else
-                    result = a + b;
+                    result = add_result;
             end
             `ALU_SLL: begin
-                result = a << b[4:0];
+                result = shl_result;
             end
             `ALU_SLT: begin
-                result = (signed_a < signed_b) ? 32'b1: 32'b0;
+                result = slt_result;
             end
             `ALU_SLTU: begin
-                result = (a < b) ? 32'b1: 32'b0;
+                result = sltu_result;
             end
             `ALU_XOR: begin
-                result = a ^ b;
+                result = xor_result;
             end
             `ALU_SRL: begin
                 if (aux == 1'b1) begin 
-                    result = signed_a >>> b[4:0];
+                    result = sra_result;
                 end else 
-                    result = a >> b[4:0];
+                    result = srl_result;
             end
             `ALU_OR: begin
-                result = a | b;
+                result = or_result;
             end
             `ALU_AND: begin
-                result = a & b;
+                result = and_result;
             end
         endcase
     end

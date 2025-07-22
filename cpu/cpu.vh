@@ -25,6 +25,8 @@
 `define COMPARE_LTU 3'b110
 `define COMPARE_GEU 3'b111
 
+`define COMPARE_INV 3'b011
+
 `define LUI_OPCODE     7'b0110111
 `define OP_IMM_OPCODE  7'b0010011
 `define OP_OPCODE      7'b0110011
@@ -34,3 +36,6 @@
 `define JALR_OPCODE    7'b1100111
 `define STORE_OPCODE    7'b0100011
 `define LOAD_OPCODE    7'b0000011
+
+`define ROM_SIZE    32'h400
+`define RAM_SIZE    32'h1000

@@ -16,7 +16,7 @@ module uart_rx (input CLK,
 	reg[20:0] prescaler;
 	reg[7:0] data;
 	reg[3:0] data_count;
-	reg rx_sync[2:0];
+	reg [2:0] rx_sync;
 	reg last_rx;
 	reg rst_out;
 	reg[1:0] state;

@@ -13,7 +13,16 @@ V_SRC := cpu.v \
 		decoder/imm_decoder.v \
 		alu/alu.v \
 		compare/compare.v \
-		#dualport_mem.v
+		load_store/load_store.v \
+		rom/rom.v \
+		../uart/uart.v \
+		../uart/uart_mem_interface.v \
+		../uart/uart_fifo.v \
+		../uart/uart_tx.v \
+		../uart/uart_rx.v \
+		../uart/uart_baud_gen.v \
+		../utils/fifo.v \
+		../utils/seven_seg.v
 
 SIM_SRC := /usr/share/verilator/include/verilated.cpp \
 		/usr/share/verilator/include/verilated_vcd_c.cpp \
@@ -30,7 +39,7 @@ SIM_SRC := /usr/share/verilator/include/verilated.cpp \
 		fence_instruction.cpp \
 		../testbench_class.hpp
 
-MEM_FILE := data.mem
+MEM_FILE := bootloader/bootloader.mem
 
 INC_DIR := obj_dir \
 		/usr/share/verilator/include \

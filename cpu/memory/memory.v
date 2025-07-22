@@ -1,98 +1,153 @@
-
-    module memory #(parameter SIZE=5, parameter MEMFILE="data.mem") (
-    input CLK,
-    inout [31:0] data,
-    input wr_rd,
+module memory 
+    (
+    input clk,
+    input [31:0] data_in,
+    output reg[31:0] data_out,
+    input [13:0] addr,
+    input wr,
     input en,
-    input [SIZE + 2: 0] addr,
     input [2:0] size,
-    output exception_out
-);
-/*verilator tracing_on*/
-    reg [31:0] mem [2**SIZE: 0] /*verilator public_flat_rd*/;
-    /* verilator tracing_off*/
+    output exception
+    );
 
-/*verilator tracing_on*/
-    wire [31:0] mem_0 = mem[774];
-/*verilator tracing_off*/
-    reg[31:0] loc_data;
+    reg [15:0] data_out_low, data_out_high;
+    wire [15:0] data_in_low, data_in_high;
 
-    assign data = (!wr_rd && en) ? loc_data : 32'bz;
-    assign exception_out = (en && ((size == 3'b010 && addr[1:0] != 0) || (size == 3'b011) || (size == 3'b001 && (addr[1:0] == 1 || addr[1:0] == 3))))? 1 : 0;
+`ifdef SYNTHESIS
+// Debug message during synthesis
+    SB_SPRAM256KA spram_low (
+        .ADDRESS(addr),
+        .DATAIN(data_in_low),
+        .MASKWREN(we[3:0]),
+        .WREN(wr & en),
+        .CHIPSELECT(1'b1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(data_out_low)
+    );
 
-    // Add a public string that can be set from C++
-    (* verilator public *) reg [8*1024-1:0] memfile_path;
+    SB_SPRAM256KA spram_high (
+        .ADDRESS(addr),
+        .DATAIN(data_in_high),
+        .MASKWREN(we[7:4]),
+        .WREN(wr & en),
+        .CHIPSELECT(1'b1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(data_out_high)
+    );
 
-    initial begin
-        $display("Memory file: %s", MEMFILE);
-        $readmemh(MEMFILE, mem);
+`else
+// Simulation model using standard Verilog memory arrays
+    reg [7:0] mem_low[0:16383];  // 16K bytes for low memory
+    reg [7:0] mem_high[0:16383]; // 16K bytes for high memory
+    
+    // Read logic for simulation
+    always @(posedge clk) begin
+        if (en) begin
+            data_out_low <= {mem_low[{addr[13:2], 2'b01}], mem_low[{addr[13:2], 2'b00}]};
+            data_out_high <= {mem_high[{addr[13:2], 2'b01}], mem_high[{addr[13:2], 2'b00}]};
+        end
     end
-    always @(posedge CLK) begin
-        if(wr_rd && en) begin
-            case (size) 
-                3'b000: begin
-                    var[31:0] shift = 8 * addr[1:0];
-                    var[31:0] mask = 32'b11111111 << (shift);
-                    mem[addr[SIZE + 2: 2]] <= (mem[addr[SIZE + 2: 2]] & ~mask) | ((data << shift) & mask);
-                end
-                3'b001: begin 
-                    if(addr[1:0] == 1 || addr[1:0] == 3) begin
-                        //we have to throw and exception here.
-                    end else begin
-                        var[31:0] shift = 8 * addr[1:0];
-                        var [31:0] mask = 32'hFFFF << (shift);
-                        mem[addr[SIZE + 2: 2]] <= (mem[addr[SIZE + 2: 2]] & ~mask) | ((data << shift) & mask);
-                    end
-                end
-                3'b010: begin
-                    if (addr[1:0] == 0)
-                        mem[addr[SIZE + 2: 2]] <= data;
-                        // we don't do anything if it is not aligned. Exception will be raised instead.
-                end
-                default: ; //Should trhow error
-            //mem[addr[SIZE + 2: 2]] <= data;
-            endcase
+    
+    // Write logic for simulation
+    always @(posedge clk) begin
+        if (wr && en) begin
+            if (we[0]) mem_low[{addr[13:2], 2'b00}] <= data_in_low[7:0];
+            if (we[1]) mem_low[{addr[13:2], 2'b01}] <= data_in_low[15:8];
+            if (we[2]) mem_high[{addr[13:2], 2'b00}] <= data_in_high[7:0];
+            if (we[3]) mem_high[{addr[13:2], 2'b01}] <= data_in_high[15:8];
         end
     end
 
-    always @(posedge CLK) begin
-        case (size)
-            3'b000: begin
-                var[31:0] shift = 8 * addr[1:0];
-                var[31:0] mask = 32'hFF << (shift);
-                var[31:0] temp = (mem[addr[SIZE + 2: 2]] & mask) >> shift;
-                loc_data <= {{24{temp[7]}},temp [7:0]};
-            end
-            3'b001: begin
-                if(addr[1:0] == 0 || addr[1:0] == 2) begin
-                    var[31:0] shift = 8 * addr[1:0];
-                    var [31:0] mask = 32'hFFFF << (shift);
-                    var [31:0] temp = (mem[addr[SIZE + 2: 2]] & mask) >> shift;
-                    loc_data <= {{16{temp[15]}}, temp[15:0]};
-                end
-                // Otherwise we will throw an exception
-            end
-            3'b010: begin
-                if (addr[1:0] == 0)
-                    loc_data <= mem[addr[SIZE + 2: 2]];
-                //otherwise we wil throw an exception
-            end
-            3'b100: begin
-                var[31:0] shift = 8 * addr[1:0];
-                var[31:0] mask = 32'hFF << (shift);
-                loc_data <= (mem[addr[SIZE + 2: 2]] & mask) >> shift;
-            end
-            3'b101: begin
-                if(addr[1:0] == 0 || addr[1:0] == 2) begin
-                    var[31:0] shift = 8 * addr[1:0];
-                    var [31:0] mask = 32'hFFFF << (shift);
-                    loc_data <= (mem[addr[SIZE + 2: 2]] & mask) >> shift;
-                end
-            end
-            default: ; //Should throw error
 
-        endcase
-        //loc_data <= mem[addr[SIZE + 2: 2]];
+
+`endif
+
+    //Declare temporary variables
+    wire[31:0] shift;
+    reg[31:0] shift_wr;
+    wire[31:0] mask;
+    reg[31:0] temp;
+    wire[31:0] temp_in;
+    reg[7:0] we;
+
+    always @ (*) begin
+        if (wr && en) begin
+            case (size)
+                3'b000: begin
+                    shift_wr = 2*addr[1:0];
+                    we = 8'h03 << shift_wr;
+                end
+                3'b001: begin
+                    shift_wr = 2*addr[1:0];
+                    we = 8'h0F << shift_wr;
+                end
+                3'b010: begin
+                    shift_wr = 0;
+                    we = 8'hFF;
+                end
+                default: begin
+                    shift_wr = 0;
+                    we = 8'h00;
+                end
+            endcase
+        end else begin
+            shift_wr = 0;
+            we       = 8'h00;
+        end
     end
 
+    always @ (*) begin
+        case (size)
+            3'b000: begin
+                temp = ({data_out_high, data_out_low} & mask) >> shift; 
+                data_out = {{24{temp[7]}}, temp [7:0]};
+            end
+            3'b001: begin
+                if (addr[1:0] == 0 || addr[1:0] == 2) begin
+                    temp = ({data_out_high, data_out_low} & mask) >> shift;
+                    data_out = {{16{temp[15]}}, temp[15:0]};
+                end else begin
+                    temp = 32'h0;
+                    data_out = 32'h0;
+                end 
+            end
+            3'b010: begin
+                if (addr[1:0] == 0) begin
+                    temp = 32'h0;
+                    data_out = {data_out_high, data_out_low};
+                end else begin
+                    temp = 32'h0;
+                    data_out = 32'h0;
+                end
+            end
+            3'b100: begin
+                data_out = ({data_out_high, data_out_low} & mask) >> shift;
+                temp = 32'h0;
+            end
+            3'b101: begin
+                temp = 32'h0;
+                data_out = ({data_out_high, data_out_low} & mask) >> shift;
+            end
+            default: begin
+                temp = 32'h0;
+                data_out = 32'h0;
+            end
+        endcase
+    end
+
+    assign temp_in = (data_in << shift);
+    assign data_in_low = temp_in[15:0];
+    assign data_in_high = temp_in[31:16];
+    assign shift = 8*addr[1:0];
+    assign mask = (size[1:0] == 2'b00) ? 32'hFF << shift : (size[1:0] == 2'b01) ? 32'hFFFF << shift: 32'hFFFFFFFF;
+    //assign data_out = ({data_out_high, data_out_low} & mask) >> shift;
+    assign exception = (en && ((size == 3'b010 && addr[1:0] != 0) || (size == 3'b011) || (size == 3'b001 && (addr[1:0] == 1 || addr[1:0] == 3))))? 1 : 0;
+
 endmodule
+

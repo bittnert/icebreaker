@@ -10,8 +10,8 @@ module dualport_mem #(parameter SIZE=32)(
 
     reg [31:0] mem [0:SIZE-1] /*verilator public_flat_rd*/;
 
-initial begin
     integer i;
+initial begin
     for ( i = 0; i < SIZE; i++) begin
         mem[i] = 32'b0; // initialize memory with all zeros
     end 
