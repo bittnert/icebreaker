@@ -13,6 +13,8 @@ SIM_SRC := /usr/share/verilator/include/verilated.cpp \
 
 INC_DIR := obj_dir \
 		/usr/share/verilator/include \
-		../..		 
+		/usr/share/verilator/include/vltstd \
+		../.. \
+		..		 
 
 include ../../main.mk

@@ -1,9 +1,9 @@
 module memory 
     (
-    input clk,
+    input CLK,
     input [31:0] data_in,
     output reg[31:0] data_out,
-    input [13:0] addr,
+    input [15:0] addr,
     input wr,
     input en,
     input [2:0] size,
@@ -16,12 +16,12 @@ module memory
 `ifdef SYNTHESIS
 // Debug message during synthesis
     SB_SPRAM256KA spram_low (
-        .ADDRESS(addr),
+        .ADDRESS(addr[15:2]),
         .DATAIN(data_in_low),
         .MASKWREN(we[3:0]),
         .WREN(wr & en),
         .CHIPSELECT(1'b1),
-        .CLOCK(clk),
+        .CLOCK(CLK),
         .STANDBY(1'b0),
         .SLEEP(1'b0),
         .POWEROFF(1'b1),
@@ -29,12 +29,12 @@ module memory
     );
 
     SB_SPRAM256KA spram_high (
-        .ADDRESS(addr),
+        .ADDRESS(addr[15:2]),
         .DATAIN(data_in_high),
         .MASKWREN(we[7:4]),
         .WREN(wr & en),
         .CHIPSELECT(1'b1),
-        .CLOCK(clk),
+        .CLOCK(CLK),
         .STANDBY(1'b0),
         .SLEEP(1'b0),
         .POWEROFF(1'b1),
@@ -43,24 +43,28 @@ module memory
 
 `else
 // Simulation model using standard Verilog memory arrays
-    reg [7:0] mem_low[0:16383];  // 16K bytes for low memory
-    reg [7:0] mem_high[0:16383]; // 16K bytes for high memory
+    reg [15:0] mem_low[0:16383]/*verilator public_flat_rd*/;  // 16K bytes for low memory
+    reg [15:0] mem_high[0:16383]/*verilator public_flat_rd*/; // 16K bytes for high memory
     
     // Read logic for simulation
-    always @(posedge clk) begin
+    always @(posedge CLK) begin
         if (en) begin
-            data_out_low <= {mem_low[{addr[13:2], 2'b01}], mem_low[{addr[13:2], 2'b00}]};
-            data_out_high <= {mem_high[{addr[13:2], 2'b01}], mem_high[{addr[13:2], 2'b00}]};
+            data_out_low <= mem_low[addr[15:2]];
+            data_out_high <= mem_high[addr[15:2]];
         end
     end
     
     // Write logic for simulation
-    always @(posedge clk) begin
+    always @(posedge CLK) begin
         if (wr && en) begin
-            if (we[0]) mem_low[{addr[13:2], 2'b00}] <= data_in_low[7:0];
-            if (we[1]) mem_low[{addr[13:2], 2'b01}] <= data_in_low[15:8];
-            if (we[2]) mem_high[{addr[13:2], 2'b00}] <= data_in_high[7:0];
-            if (we[3]) mem_high[{addr[13:2], 2'b01}] <= data_in_high[15:8];
+            if (we[0]) mem_low[addr[15:2]][3:0] <= data_in_low[3:0];
+            if (we[1]) mem_low[addr[15:2]][7:4] <= data_in_low[7:4];
+            if (we[2]) mem_low[addr[15:2]][11:8] <= data_in_low[11:8];
+            if (we[3]) mem_low[addr[15:2]][15:12] <= data_in_low[15:12];
+            if (we[4]) mem_high[addr[15:2]][3:0] <= data_in_high[3:0];
+            if (we[5]) mem_high[addr[15:2]][7:4] <= data_in_high[7:4];
+            if (we[6]) mem_high[addr[15:2]][11:8] <= data_in_high[11:8];
+            if (we[7]) mem_high[addr[15:2]][15:12] <= data_in_high[15:12];
         end
     end
 

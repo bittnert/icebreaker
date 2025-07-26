@@ -21,23 +21,48 @@ The current implementation is a simple RISC-V CPU with:
 - Basic memory interface
 - Minimal control logic
 - Prepared for future pipelining implementation
+- Bootloader can load binary via UART
 
 Metrics of the current implementation:
 
 - **CPI (Cycles Per Instruction)**: 5
 - **IPC (Instructions Per Cycle)**: 0.2
-- **Clock frequency**: N/A (does not fit into ice40 FPGA)
-- **Resource utilization**: N/A (does not fit into ice40 FPGA)
+- **Clock frequency**: 14.31 MHz
+- **Resource utilization**:
+ 
+| Resource | Used | Available | Utilization |
+|----------|------|-----------|-------------|
+| ICESTORM_LC | 2356 | 5280 | 44% |
+| ICESTORM_RAM | 6 | 30 | 20% |
+| SB_IO | 4 | 96 | 4% |
+| SB_GB | 7 | 8 | 87% |
+| ICESTORM_PLL | 0 | 1 | 0% |
+| SB_WARMBOOT | 0 | 1 | 0% |
+| ICESTORM_DSP | 0 | 8 | 0% |
+| ICESTORM_HFOSC | 0 | 1 | 0% |
+| ICESTORM_LFOSC | 0 | 1 | 0% |
+| SB_I2C | 0 | 2 | 0% |
+| SB_SPI | 0 | 2 | 0% |
+| IO_I3C | 0 | 2 | 0% |
+| SB_LEDDA_IP | 0 | 1 | 0% |
+| SB_RGBA_DRV | 0 | 1 | 0% |
+| ICESTORM_SPRAM | 2 | 4 | 50% |
+
 - **Benchmark scores**: N/A (not yet measured)
-- **Architecture compatability**: RV32I architecture test suite, 100 % test passed (simulation only)
+- **Architecture compatability**: Update to ICE40 FPGA broke RSIC-V Architectural test suite testbench
 
 ## Next Steps
 
-- [ ] Add load/store unit to have different memories and peripherals
-- [ ] Change main memory to use Single port SRAM instead of Embedded block RAM
-- [ ] Add ROM using EBR containing bootloader to load binary into new main memory
-- [ ] Add UART interface for user input and output
-- [ ] Run design in FPGA (using ice40 FPGA)
+- [ ] Add on-chip bus interface (e.g. Wishbone) to allow for more and more complex peripherals
+- [ ] Update CPU to allow for delayed read and write operations (to allow more complex perfipherals)
+- [ ] Update RISC-V Architecture test suite to run in simulation
+- [ ] Add interrupt support
+- [ ] Add first benchmarks to measure performance
+- [x] Add load/store unit to have different memories and peripherals
+- [x] Change main memory to use Single port SRAM instead of Embedded block RAM
+- [x] Add ROM using EBR containing bootloader to load binary into new main memory
+- [x] Add UART interface for user input and output
+- [x] Run design in FPGA (using ice40 FPGA)
 
 ## Planned Optimizations
 

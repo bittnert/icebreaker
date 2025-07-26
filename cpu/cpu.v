@@ -42,7 +42,7 @@ module cpu(input CLK,
 
     assign memory_bus_in = rs2;
 
-/* verilator lint_off PINCONNECTEMPTY*/
+/* verilator lint_off PINMISSING*/
     load_store load_store_unit(.CLK(CLK),
                                 .addr(mem_addr),
                                 .data_in(memory_bus_in),

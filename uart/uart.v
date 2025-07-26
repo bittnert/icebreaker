@@ -17,7 +17,7 @@ wire empty;
 wire rx_ready;
 wire[7:0] tx_data;
 wire [7:0] rx_data;
-wire[3:0] tx_fifo_fill_lvl;
+wire[3:0] tx_fifo_fill_lvl /*verilator public_flat_rd*/;
 wire[3:0] rx_fifo_fill_lvl;
 wire tx_active;
 wire tx_ready;
