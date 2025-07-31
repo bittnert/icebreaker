@@ -2,7 +2,7 @@
 MEMORY
 {
     rom (rx) : ORIGIN = 0x00000000, LENGTH = 4K
-    ram (rw) : ORIGIN = 0x10000000, LENGTH = 64K
+    ram (rw) : ORIGIN = 0x01000000, LENGTH = 64K
 }
 ENTRY(_start)
 SECTIONS
@@ -30,5 +30,5 @@ SECTIONS
     .heap : {
         *(.heap)
     } > ram
-
+    _stack_top = ORIGIN(ram) + LENGTH(ram);
 }

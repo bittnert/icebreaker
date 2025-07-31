@@ -131,7 +131,7 @@ int main (int argc, char **argv)
 	}
 	printf("\nExecution finished\n");
 	
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < (length + 3)/4; i++) {
 		vpiHandle low_element = vpi_handle_by_index(mem_low_hdl, i);
 		vpiHandle high_element = vpi_handle_by_index(mem_high_hdl, i);
 		if (low_element && high_element) {
@@ -140,7 +140,7 @@ int main (int argc, char **argv)
 			high_value.format = vpiIntVal;
 			vpi_get_value(low_element, &low_value);
 			vpi_get_value(high_element, &high_value);
-			printf("Memory element %d: 0x%08x %08x\n", i, low_value.value.integer, high_value.value.integer);
+			printf("Memory element %d: 0x%04x%04x\n", i,  high_value.value.integer, low_value.value.integer);
 		}
 	}
     return 0;

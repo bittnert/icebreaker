@@ -1,5 +1,6 @@
 
-SRC := startup.s
+SRC := startup.s \
+	main.c
 
 LINKERSCRIPT := linkram
 
@@ -12,7 +13,7 @@ all: firmware.bin
 	riscv32-unknown-elf-objcopy -O binary $< $@
 
 %.elf: ${SRC}
-	riscv32-unknown-elf-gcc -nostartfiles -nostdlib -Wa,-mno-arch-attr -mno-relax -march=rv32i -mabi=ilp32 -T${LINKERSCRIPT} -o $@ $<
+	riscv32-unknown-elf-gcc -nostartfiles -nostdlib -O3 -Wa,-mno-arch-attr -mno-relax -march=rv32i -mabi=ilp32 -T${LINKERSCRIPT} -o $@ ${SRC}
 
 clean:
 	rm -f *.bin *.elf *.dis

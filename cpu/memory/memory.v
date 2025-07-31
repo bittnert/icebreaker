@@ -48,10 +48,8 @@ module memory
     
     // Read logic for simulation
     always @(posedge CLK) begin
-        if (en) begin
-            data_out_low <= mem_low[addr[15:2]];
-            data_out_high <= mem_high[addr[15:2]];
-        end
+        data_out_low <= mem_low[addr[15:2]];
+        data_out_high <= mem_high[addr[15:2]];
     end
     
     // Write logic for simulation
