@@ -1,0 +1,57 @@
+
+MEMORY
+{
+    rom (rx) : ORIGIN = 0x00000000, LENGTH = 4K
+    ram (rw) : ORIGIN = 0x01000000, LENGTH = 128K
+}
+ENTRY(_start)
+SECTIONS
+{
+    .text : {
+        KEEP(*(.text.init))
+        *(.text)
+        *(.text*)
+    } > ram
+
+    .rodata : {
+        *(.rodata)
+        *(.rodata*)
+    } > ram
+
+    .data : {
+        *(.data)
+        *(.data*)
+    } > ram
+
+    .bss : {
+        . = ALIGN(4);
+        __bss_start = .;
+        *(.bss)
+        *(.bss*)
+        . = ALIGN(4);
+        __bss_end = .;
+    } > ram
+
+    _end = .;
+    PROVIDE(end = .);
+
+    .heap : {
+        . = ALIGN(4);
+        __heap_start = .;
+        *(.heap)
+        . = . + __heap_size;
+        . = ALIGN(4);
+        __heap_end = .;
+    } > ram
+
+    .stack : {
+        . = ORIGIN(ram) + LENGTH(ram) - __stack_size;
+        __stack_start = .;
+        . = ORIGIN(ram) + LENGTH(ram);
+        __stack_end = .;
+    } > ram
+    
+    _stack_top = ORIGIN(ram) + LENGTH(ram);
+
+    ASSERT(__heap_end <= __stack_start, "Heap and stack overlap")
+}

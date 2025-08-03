@@ -1,0 +1,388 @@
+Archive member included to satisfy reference by file (symbol)
+
+/opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+                              dhrystone-dhry_1.o (__divsf3)
+/opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+                              dhrystone-dhry_1.o (__mulsf3)
+/opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+                              dhrystone-dhry_1.o (__fixsfsi)
+/opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+                              dhrystone-dhry_1.o (__floatsisf)
+/opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+                              /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o) (__mulsi3)
+/opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+                              dhrystone-dhry_1.o (__divsi3)
+/opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+                              /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o) (__clzsi2)
+/opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+                              /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o) (__clz_tab)
+/opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a(libc_a-strcpy.o)
+                              dhrystone-dhry_1.o (strcpy)
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+rom              0x00000000         0x00001000         xr
+ram              0x01000000         0x00020000         rw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0x00000800                        __stack_size = 0x800
+                0x00001000                        __heap_size = 0x1000
+LOAD dhrystone-dhry_1.o
+LOAD dhrystone-dhry_2.o
+LOAD dhrystone-strcmp.o
+LOAD dhrystone-startup.o
+LOAD dhrystone-timer.o
+LOAD dhrystone-printf.o
+LOAD /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a
+LOAD /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a
+LOAD /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a
+START GROUP
+LOAD /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a
+LOAD /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a
+LOAD /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libnosys.a
+END GROUP
+START GROUP
+LOAD /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a
+LOAD /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a
+LOAD /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libnosys.a
+END GROUP
+
+.text           0x01000000     0x18dc
+ *(.text.init)
+ .text.init     0x01000000       0x58 dhrystone-startup.o
+                0x01000000                _start
+ *(.text)
+ .text          0x01000058      0x22c dhrystone-dhry_1.o
+                0x01000058                Proc_1
+                0x010001e0                Proc_2
+                0x01000210                Proc_3
+                0x0100023c                Proc_4
+                0x0100026c                Proc_5
+ .text          0x01000284      0x140 dhrystone-dhry_2.o
+                0x01000284                Proc_6
+                0x010002d8                Proc_7
+                0x010002e8                Proc_8
+                0x01000358                Func_1
+                0x01000374                Func_2
+                0x010003b8                Func_3
+ .text          0x010003c4      0x17c dhrystone-strcmp.o
+                0x010003c4                strcmp
+ .text          0x01000540        0x0 dhrystone-startup.o
+ .text          0x01000540        0xc dhrystone-timer.o
+                0x01000540                time
+ .text          0x0100054c      0x388 dhrystone-printf.o
+                0x0100054c                printf
+ .text          0x010008d4      0x374 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+                0x010008d4                __divsf3
+ .text          0x01000c48      0x348 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+                0x01000c48                __mulsf3
+ .text          0x01000f90       0x70 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+                0x01000f90                __fixsfsi
+ .text          0x01001000      0x10c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+                0x01001000                __floatsisf
+ .text          0x0100110c       0x24 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+                0x0100110c                __mulsi3
+ .text          0x01001130       0xb4 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+                0x01001130                __divsi3
+                0x01001138                __hidden___udivsi3
+                0x01001138                __udivsi3
+                0x01001180                __umodsi3
+                0x010011b4                __modsi3
+ .text          0x010011e4       0x4c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+                0x010011e4                __clzsi2
+ .text          0x01001230        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+ .text          0x01001230        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a(libc_a-strcpy.o)
+ *(.text*)
+ .text.startup  0x01001230      0x690 dhrystone-dhry_1.o
+                0x01001230                main
+ .text.strcpy   0x010018c0       0x1c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a(libc_a-strcpy.o)
+                0x010018c0                strcpy
+
+.rodata         0x010018dc      0x715
+ *(.rodata)
+ .rodata        0x010018dc       0x13 dhrystone-startup.o
+ *fill*         0x010018ef        0x1 
+ .rodata        0x010018f0       0x3c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .rodata        0x0100192c      0x100 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+                0x0100192c                __clz_tab
+ *(.rodata*)
+ .rodata.str1.4
+                0x01001a2c      0x5c5 dhrystone-dhry_1.o
+                                0x5c1 (size before relaxing)
+
+.srodata.cst4   0x01001ff4        0xc
+ .srodata.cst4  0x01001ff4        0xc dhrystone-dhry_1.o
+
+.rela.dyn       0x01002000        0x0
+ .rela.text.init
+                0x01002000        0x0 dhrystone-dhry_1.o
+
+.data           0x01002000        0x0
+ *(.data)
+ .data          0x01002000        0x0 dhrystone-dhry_1.o
+ .data          0x01002000        0x0 dhrystone-dhry_2.o
+ .data          0x01002000        0x0 dhrystone-strcmp.o
+ .data          0x01002000        0x0 dhrystone-startup.o
+ .data          0x01002000        0x0 dhrystone-timer.o
+ .data          0x01002000        0x0 dhrystone-printf.o
+ .data          0x01002000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .data          0x01002000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .data          0x01002000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .data          0x01002000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .data          0x01002000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+ .data          0x01002000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+ .data          0x01002000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .data          0x01002000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+ .data          0x01002000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a(libc_a-strcpy.o)
+ *(.data*)
+
+.bss            0x01002000     0x2838
+                0x01002000                        . = ALIGN (0x4)
+                0x01002000                        __bss_start = .
+ *(.bss)
+ .bss           0x01002000     0x2838 dhrystone-dhry_1.o
+                0x01002060                Arr_1_Glob
+                0x01002128                Arr_2_Glob
+ .bss           0x01004838        0x0 dhrystone-dhry_2.o
+ .bss           0x01004838        0x0 dhrystone-strcmp.o
+ .bss           0x01004838        0x0 dhrystone-startup.o
+ .bss           0x01004838        0x0 dhrystone-timer.o
+ .bss           0x01004838        0x0 dhrystone-printf.o
+ .bss           0x01004838        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .bss           0x01004838        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .bss           0x01004838        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .bss           0x01004838        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .bss           0x01004838        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+ .bss           0x01004838        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+ .bss           0x01004838        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .bss           0x01004838        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+ .bss           0x01004838        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a(libc_a-strcpy.o)
+ *(.bss*)
+                0x01004838                        . = ALIGN (0x4)
+                0x01004838                        __bss_end = .
+                0x01004838                        _end = .
+                [!provide]                        PROVIDE (end = .)
+
+.sbss           0x01004838       0x2c
+ .sbss          0x01004838       0x2c dhrystone-dhry_1.o
+                0x01004838                Dhrystones_Per_Second
+                0x0100483c                Microseconds
+                0x01004840                User_Time
+                0x01004844                End_Time
+                0x01004848                Begin_Time
+                0x0100484c                Reg
+                0x01004850                Ch_2_Glob
+                0x01004851                Ch_1_Glob
+                0x01004854                Bool_Glob
+                0x01004858                Int_Glob
+                0x0100485c                Next_Ptr_Glob
+                0x01004860                Ptr_Glob
+
+.heap           0x01004864     0x1000
+                0x01004864                        . = ALIGN (0x4)
+                0x01004864                        __heap_start = .
+ *(.heap)
+                0x01005864                        . = (. + __heap_size)
+ *fill*         0x01004864     0x1000 
+                0x01005864                        . = ALIGN (0x4)
+                0x01005864                        __heap_end = .
+
+.stack          0x01005864    0x1a79c
+                0x0101f800                        . = ((ORIGIN (ram) + LENGTH (ram)) - __stack_size)
+ *fill*         0x01005864    0x19f9c 
+                0x0101f800                        __stack_start = .
+                0x01020000                        . = (ORIGIN (ram) + LENGTH (ram))
+ *fill*         0x0101f800      0x800 
+                0x01020000                        __stack_end = .
+                0x01020000                        _stack_top = (ORIGIN (ram) + LENGTH (ram))
+                0x00000001                        ASSERT ((__heap_end <= __stack_start), Heap and stack overlap)
+OUTPUT(dhrystone elf32-littleriscv)
+
+.comment        0x00000000       0x2c
+ .comment       0x00000000       0x2c dhrystone-dhry_1.o
+                                 0x1b (size before relaxing)
+ .comment       0x0000002c       0x1b dhrystone-dhry_2.o
+ .comment       0x0000002c       0x1b dhrystone-timer.o
+ .comment       0x0000002c       0x1b dhrystone-printf.o
+ .comment       0x0000002c       0x1b /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .comment       0x0000002c       0x1b /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .comment       0x0000002c       0x1b /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .comment       0x0000002c       0x1b /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .comment       0x0000002c       0x1b /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .comment       0x0000002c       0x1b /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+ .comment       0x0000002c       0x13 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a(libc_a-strcpy.o)
+
+.note.GNU-stack
+                0x00000000        0x0
+ .note.GNU-stack
+                0x00000000        0x0 dhrystone-dhry_1.o
+ .note.GNU-stack
+                0x00000000        0x0 dhrystone-dhry_2.o
+ .note.GNU-stack
+                0x00000000        0x0 dhrystone-timer.o
+ .note.GNU-stack
+                0x00000000        0x0 dhrystone-printf.o
+ .note.GNU-stack
+                0x00000000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .note.GNU-stack
+                0x00000000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .note.GNU-stack
+                0x00000000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .note.GNU-stack
+                0x00000000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .note.GNU-stack
+                0x00000000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .note.GNU-stack
+                0x00000000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+ .note.GNU-stack
+                0x00000000        0x0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a(libc_a-strcpy.o)
+
+.riscv.attributes
+                0x00000000       0x1c
+ .riscv.attributes
+                0x00000000       0x1c dhrystone-dhry_1.o
+ .riscv.attributes
+                0x0000001c       0x1c dhrystone-dhry_2.o
+ .riscv.attributes
+                0x00000038       0x1a dhrystone-strcmp.o
+ .riscv.attributes
+                0x00000052       0x1a dhrystone-startup.o
+ .riscv.attributes
+                0x0000006c       0x1c dhrystone-timer.o
+ .riscv.attributes
+                0x00000088       0x1c dhrystone-printf.o
+ .riscv.attributes
+                0x000000a4       0x1c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .riscv.attributes
+                0x000000c0       0x1c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .riscv.attributes
+                0x000000dc       0x1c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .riscv.attributes
+                0x000000f8       0x1c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .riscv.attributes
+                0x00000114       0x1a /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+ .riscv.attributes
+                0x0000012e       0x1a /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+ .riscv.attributes
+                0x00000148       0x1c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .riscv.attributes
+                0x00000164       0x1c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+ .riscv.attributes
+                0x00000180       0x1c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/../../../../riscv32-unknown-elf/lib/libc_nano.a(libc_a-strcpy.o)
+
+.debug_info     0x00000000      0xf67
+ .debug_info    0x00000000      0x42e /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .debug_info    0x0000042e      0x445 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .debug_info    0x00000873      0x1ce /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .debug_info    0x00000a41      0x23c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .debug_info    0x00000c7d       0x31 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+ .debug_info    0x00000cae       0x5f /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+ .debug_info    0x00000d0d      0x168 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .debug_info    0x00000e75       0xf2 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+
+.debug_abbrev   0x00000000      0x74d
+ .debug_abbrev  0x00000000      0x150 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .debug_abbrev  0x00000150      0x187 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .debug_abbrev  0x000002d7      0x15b /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .debug_abbrev  0x00000432      0x17c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .debug_abbrev  0x000005ae       0x28 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+ .debug_abbrev  0x000005d6       0x28 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+ .debug_abbrev  0x000005fe       0xd9 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .debug_abbrev  0x000006d7       0x76 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+
+.debug_loclists
+                0x00000000      0xec7
+ .debug_loclists
+                0x00000000      0x714 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .debug_loclists
+                0x00000714      0x4b3 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .debug_loclists
+                0x00000bc7       0xc4 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .debug_loclists
+                0x00000c8b      0x1ea /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .debug_loclists
+                0x00000e75       0x52 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+
+.debug_aranges  0x00000000       0xf8
+ .debug_aranges
+                0x00000000       0x20 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .debug_aranges
+                0x00000020       0x20 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .debug_aranges
+                0x00000040       0x20 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .debug_aranges
+                0x00000060       0x20 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .debug_aranges
+                0x00000080       0x20 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+ .debug_aranges
+                0x000000a0       0x20 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+ .debug_aranges
+                0x000000c0       0x20 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .debug_aranges
+                0x000000e0       0x18 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+
+.debug_rnglists
+                0x00000000      0x15e
+ .debug_rnglists
+                0x00000000       0x78 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .debug_rnglists
+                0x00000078       0x79 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .debug_rnglists
+                0x000000f1       0x13 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .debug_rnglists
+                0x00000104       0x44 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .debug_rnglists
+                0x00000148       0x16 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+
+.debug_line     0x00000000     0x1d64
+ .debug_line    0x00000000      0xa2c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .debug_line    0x00000a2c      0xa41 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .debug_line    0x0000146d      0x245 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .debug_line    0x000016b2      0x3ad /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .debug_line    0x00001a5f       0x7a /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+ .debug_line    0x00001ad9      0x153 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+ .debug_line    0x00001c2c       0xef /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .debug_line    0x00001d1b       0x49 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+
+.debug_str      0x00000000      0x52e
+ .debug_str     0x00000000      0x52e /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+                                0x2e2 (size before relaxing)
+ .debug_str     0x0000052e      0x28c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .debug_str     0x0000052e      0x193 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .debug_str     0x0000052e      0x223 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .debug_str     0x0000052e       0xa0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+ .debug_str     0x0000052e       0xcd /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+ .debug_str     0x0000052e      0x1c8 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .debug_str     0x0000052e      0x1ab /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+
+.debug_line_str
+                0x00000000      0x1a2
+ .debug_line_str
+                0x00000000      0x1a2 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+                                 0xb6 (size before relaxing)
+ .debug_line_str
+                0x000001a2       0xc0 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .debug_line_str
+                0x000001a2       0xc2 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .debug_line_str
+                0x000001a2       0xc6 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .debug_line_str
+                0x000001a2       0x8b /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(muldi3.o)
+ .debug_line_str
+                0x000001a2       0x88 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(div.o)
+ .debug_line_str
+                0x000001a2       0xa9 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)
+ .debug_line_str
+                0x000001a2       0xa9 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clz.o)
+
+.debug_frame    0x00000000      0x11c
+ .debug_frame   0x00000000       0x58 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(divsf3.o)
+ .debug_frame   0x00000058       0x4c /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(mulsf3.o)
+ .debug_frame   0x000000a4       0x20 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(fixsfsi.o)
+ .debug_frame   0x000000c4       0x38 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(floatsisf.o)
+ .debug_frame   0x000000fc       0x20 /opt/riscv/lib/gcc/riscv32-unknown-elf/15.1.0/libgcc.a(_clzsi2.o)

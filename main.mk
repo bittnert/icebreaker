@@ -6,13 +6,13 @@
 PACKAGE:="sg48"
 
 %.sim: $(SIM_SRC) %_tb.cpp  %.a 
-	$(CXX) $(addprefix -I, $(INC_DIR)) -g -DTRACE_EXECUTION  $^ -o $*.sim
+	$(CXX) $(addprefix -I, $(INC_DIR)) -g -DTRACE_EXECUTION  $^ -o $*.sim -lz
 #	./$*.sim
 #	gtkwave $*.sim.vcd
 	
 
 %.a: $(V_SRC) #$(MEM_FILE)
-	verilator -Wall --trace --vpi --public-flat-rw --prefix $* --build "-DVL_DEBUG" -DTRACE_EXECUTION --top-module $* --cc $(V_SRC) --public
+	verilator -Wall --trace-fst --vpi --public-flat-rw --prefix $* --build "-DVL_DEBUG" -DTRACE_EXECUTION --top-module $* --cc $(V_SRC) --public
 	cp obj_dir/$*__ALL.a ./$*.a
 
 

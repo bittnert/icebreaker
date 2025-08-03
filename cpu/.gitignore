@@ -8,3 +8,5 @@ share
 bin
 __pycache__
 pyvenv.cfg
+*.fst
+*.fst.hier

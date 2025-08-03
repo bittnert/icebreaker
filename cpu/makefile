@@ -22,10 +22,12 @@ V_SRC := cpu.v \
 		../uart/uart_rx.v \
 		../uart/uart_baud_gen.v \
 		../utils/fifo.v \
-		../utils/seven_seg.v
+		../utils/seven_seg.v \
+		../timer/timer.v 
 
 SIM_SRC := /usr/share/verilator/include/verilated.cpp \
 		/usr/share/verilator/include/verilated_vcd_c.cpp \
+		/usr/share/verilator/include/verilated_fst_c.cpp \
 		/usr/share/verilator/include/verilated_threads.cpp \
 		/usr/share/verilator/include/verilated_vpi.cpp \
 		instructions.cpp \

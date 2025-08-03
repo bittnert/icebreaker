@@ -1,13 +1,13 @@
 
 #include "verilated.h"
-#include <verilated_vcd_c.h>
+#include <verilated_fst_c.h>
 
 
 template<class MODULE> class TESTBENCH 
 {
 	unsigned long tickcount;
 	MODULE *dut;
-	VerilatedVcdC *trace;	
+	VerilatedFstC *trace;	
 
 public:
 	TESTBENCH()
@@ -36,8 +36,8 @@ public:
 	{
 		if (!trace)
 		{
-			trace = new VerilatedVcdC;
-			dut->trace(trace, 99);
+			trace = new VerilatedFstC;
+			dut->trace(trace, 10);
 			trace->open(vcdname);
 		}
 	}
@@ -81,7 +81,9 @@ public:
 		if (trace) 
 		{
 			trace-> dump(10*tickcount + 5);
-			trace->flush();
+			if (tickcount % 10000 == 0){
+				trace->flush();
+			}
 		}
 	}
 

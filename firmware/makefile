@@ -9,11 +9,11 @@ LINKERSCRIPT := linkram
 all: firmware.bin
 
 %.bin: %.elf
-	riscv32-unknown-elf-objdump -d $< > $@.dis
-	riscv32-unknown-elf-objcopy -O binary $< $@
+	/opt/riscv/bin/riscv32-unknown-elf-objdump -d $< > $@.dis
+	/opt/riscv/bin/riscv32-unknown-elf-objcopy -O binary $< $@
 
 %.elf: ${SRC}
-	riscv32-unknown-elf-gcc -nostartfiles -nostdlib -O3 -Wa,-mno-arch-attr -mno-relax -march=rv32i -mabi=ilp32 -T${LINKERSCRIPT} -o $@ ${SRC}
+	/opt/riscv/bin/riscv32-unknown-elf-gcc -nostartfiles -O3 -Wa,-mno-arch-attr -mno-relax -march=rv32i -mabi=ilp32 -T${LINKERSCRIPT} -o $@ ${SRC}
 
 clean:
 	rm -f *.bin *.elf *.dis

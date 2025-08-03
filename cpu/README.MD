@@ -48,7 +48,14 @@ Metrics of the current implementation:
 | SB_RGBA_DRV | 0 | 1 | 0% |
 | ICESTORM_SPRAM | 2 | 4 | 50% |
 
-- **Benchmark scores**: N/A (not yet measured)
+- **Benchmark scores**: 
+
+| Benchmark | Score |
+|-----------|-------|
+| Dhrystone | 5773 Dhrystone/s |
+| DMIPS | 3.285 DMIPS |
+| DMIPS/MHz | 3.285 DMIPS/MHz |
+
 - **Architecture compatability**: Update to ICE40 FPGA broke RSIC-V Architectural test suite testbench
 
 ## Next Steps
@@ -57,7 +64,7 @@ Metrics of the current implementation:
 - [ ] Update CPU to allow for delayed read and write operations (to allow more complex perfipherals)
 - [ ] Update RISC-V Architecture test suite to run in simulation
 - [ ] Add interrupt support
-- [ ] Add first benchmarks to measure performance
+- [x] Add first benchmarks to measure performance
 - [x] Add load/store unit to have different memories and peripherals
 - [x] Change main memory to use Single port SRAM instead of Embedded block RAM
 - [x] Add ROM using EBR containing bootloader to load binary into new main memory

@@ -2,7 +2,7 @@
 #include "cpu.h"
 #include <stdint.h>
 #include "verilated.h"
-#include <verilated_vcd_c.h>
+#include <verilated_fst_c.h>
 #include "verilated_vpi.h"
 #include "testbench_class.hpp"
 #include <fstream>
@@ -80,7 +80,7 @@ int main (int argc, char **argv)
 
 	TESTBENCH<cpu> *tb = new TESTBENCH<cpu>();
 
-    tb->opentrace("cpu.vcd");
+    tb->opentrace("cpu.fst");
     //cpu* dut = tb->get_dut();
     cpu* top = tb->get_dut();
 
