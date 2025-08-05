@@ -54,9 +54,13 @@ Metrics of the current implementation:
 |-----------|-------|
 | Dhrystone | 5773 Dhrystone/s |
 | DMIPS | 3.285 DMIPS |
-| DMIPS/MHz | 3.285 DMIPS/MHz |
+| DMIPS/MHz | 0.27375 DMIPS/MHz |
+| Coremark | 3 Interations/Sec |
+| Coremark/MHz | 0.25 Interations/Sec/MHz |
+| Whetstone | 62.5 KIPS |
+| Whetstone/MHz | 5.45 KIPS/MHz |
 
-- **Architecture compatability**: Update to ICE40 FPGA broke RSIC-V Architectural test suite testbench
+- **Architecture compatability**: Update to ICE40 FPGA broke RSIC-V Architectural test suite testbench (Test suite does not fit into FPGA RAM)
 
 ## Next Steps
 

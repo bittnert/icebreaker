@@ -48,7 +48,7 @@ static void get_vpi_handles() {
 	if (!mem_high_hdl) vl_fatal(__FILE__, __LINE__, "sim_main", "Memory high handle not found");
 }
 
-#define BAUDRATE 9600
+#define BAUDRATE 57600
 #define FREQUENCY 12500000
 
 void send_char(TESTBENCH<cpu> *tb, char c);
