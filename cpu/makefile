@@ -39,7 +39,8 @@ SIM_SRC := /usr/share/verilator/include/verilated.cpp \
 		store_instruction.cpp \
 		load_instruction.cpp \
 		fence_instruction.cpp \
-		../testbench_class.hpp
+		../testbench_class.hpp \
+		#uart_rbs.cpp
 
 MEM_FILE := bootloader/bootloader.mem
 
@@ -47,5 +48,7 @@ INC_DIR := obj_dir \
 		/usr/share/verilator/include \
 		/usr/share/verilator/include/vltstd \
 		..		 
+
+TOP := cpu
 
 include ../main.mk

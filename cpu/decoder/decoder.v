@@ -66,7 +66,11 @@ module decoder (
             mem_en <= 1;
             mem_wr <= 0;
             reg_en <= 0;
+`ifdef RISCOF
+            pc <= 32'h01000000;
+`else
             pc <= 0;
+`endif
             mem_size <= 3'b010;
             fetch_stage <= 0;
         end else begin

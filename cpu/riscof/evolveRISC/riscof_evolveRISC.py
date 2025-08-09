@@ -167,10 +167,10 @@ class evolveRISC(pluginTemplate):
             if self.target_run:
                 # set up the simulation command. Template is for spike. Please change.
                 #simcmd = self.dut_exe + ' --isa={0} +signature={1} +signature-granularity=4 {2}'.format(self.isa, sig_file, elf)
-                simcmd = f"{self.dut_exe} {test_dir}/{elf}.hex {test_dir}/{elf}.bin {test_dir}/{elf}.map"
+                simcmd = f"{self.dut_exe} {test_dir} {test_dir}/{elf}.bin {test_dir}/{elf}.map"
             else:
                 #simcmd = self.dut_exe + " " + test_dir + "/" + elf + ".bin" + " " + test_dir +"/"+ elf + ".map"
-                simcmd = f"{self.dut_exe} {test_dir}/{elf}.hex {test_dir}/{elf}.bin {test_dir}/{elf}.map"
+                simcmd = f"{self.dut_exe} {test_dir} {test_dir}/{elf}.bin {test_dir}/{elf}.map"
                 #simcmd = f'echo "NO RUN"'
             # concatenate all commands that need to be executed within a make-target.
             print(f"compile command: {cmd}")

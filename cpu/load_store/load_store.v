@@ -66,7 +66,7 @@ module load_store (
     memory main_ram (.CLK(CLK),
         .data_in(data_in),
         .data_out(ram_data),
-        .addr(addr[15:0]),
+        .addr(addr),
         .wr(wr),
         .en(ram_en),
         .size(size),

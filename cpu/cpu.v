@@ -6,7 +6,8 @@
 module cpu(input CLK, 
             input BTN_N, 
             input RX, 
-            output TX);
+            output TX,
+            output P1B1);
 
     wire [31:0] memory_bus;
     wire mem_en /*verilator public_flat_rd*/;
@@ -41,6 +42,7 @@ module cpu(input CLK,
     compare branch_comp(.a(rs1), .b(rs2), .operation(branch_sel), .result(branch_taken));
 
     assign memory_bus_in = rs2;
+    assign P1B1 = TX;
 
 /* verilator lint_off PINMISSING*/
     load_store load_store_unit(.CLK(CLK),

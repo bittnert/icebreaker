@@ -163,7 +163,8 @@ decimal_print:
 
 load_image:
     li s0, 0x01000000
-    li s1, 0x1FFFF # mask address, we only support up to 128 kbytes
+    # li s1, 0x1FFFF # mask address, we only support up to 128 kbytes
+    li s1, 0xFFFFFF # mask address, we support up to 16 Mbytes to support simulation
     mv s2, a0 # store expected size of image
     mv s4, ra
 image_load_loop:
@@ -178,7 +179,8 @@ image_load_loop:
 
 read_back:
     li s0, 0x01000000
-    li s1, 0x1FFFF # mask address, we only support up to 128 kbytes
+    # li s1, 0x1FFFF # mask address, we only support up to 128 kbytes
+    li s1, 0xFFFFFF # mask address, we support up to 16 Mbytes to support simulation
     mv s2, a0 # store expected size of image
     mv s4, ra
 image_read_back_loop:
