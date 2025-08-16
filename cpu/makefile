@@ -2,6 +2,7 @@ PROJ := cpu
 PIN_DEF := ../icebreaker.pcf
 DEVICE := up5k
 
+FREQ := 12
 
 V_SRC := cpu.v \
 		memory/memory.v \
@@ -12,6 +13,7 @@ V_SRC := cpu.v \
 		decoder/decoder.v \
 		decoder/imm_decoder.v \
 		alu/alu.v \
+		alu/dsp32_addsub.v \
 		compare/compare.v \
 		load_store/load_store.v \
 		rom/rom.v \
