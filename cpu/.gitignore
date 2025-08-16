@@ -10,3 +10,9 @@ __pycache__
 pyvenv.cfg
 *.fst
 *.fst.hier
+*.rpt
+*.a
+*.asc
+*.bin
+*.json
+*.elf

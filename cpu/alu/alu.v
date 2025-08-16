@@ -3,19 +3,20 @@ module alu(input[31:0] a,
            input[31:0] b,
            output reg[31:0] result,
            input [2:0] op,
-           input aux);
+           input aux,
+           input clk);
 
     wire signed [31:0] signed_a = a;
     wire signed [31:0] signed_b = b;
 
-    reg [31:0] add_result, sub_result, shl_result, shr_result;
+    reg [31:0] add_result, shl_result, shr_result;
     reg [31:0] or_result, xor_result, and_result, slt_result, sltu_result;
     reg [31:0] srl_result, sra_result;
 
+    dsp32_addsub #(.REGISTER_OUTPUT(1)) add_sub(.clk(clk), .add_sub(aux), .a(a), .b(b), .y(add_result));
+
     always @(*) begin
 
-        add_result = a + b;
-        sub_result = a - b;
         shl_result = a << b[4:0];
         or_result = a | b;
         xor_result = a ^ b;
@@ -27,10 +28,7 @@ module alu(input[31:0] a,
 
         case (op[2:0])
             `ALU_ADD: begin
-                if (aux == 1'b1) begin 
-                    result = sub_result;
-                end else
-                    result = add_result;
+                result = add_result;
             end
             `ALU_SLL: begin
                 result = shl_result;

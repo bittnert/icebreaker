@@ -29,9 +29,9 @@ module load_store (
     assign ram_mask = (ram_en) ? 4'hF: 4'h0;
     //assign data_out = uart_data_out;
 
-    rom #(.SIZE($clog2(1024)), .MEMFILE("bootloader/bootloader.mem")) bootloader (
+    rom #(.SIZE(10), .MEMFILE("bootloader/bootloader.mem")) bootloader (
                                                 .CLK(CLK), 
-                                                .addr(addr[$clog2(1024) + 2:0]),
+                                                .addr(addr[10 + 2:0]),
                                                 .size(size),
                                                 .data(rom_data),
                                                 .exception_out(rom_exception),
