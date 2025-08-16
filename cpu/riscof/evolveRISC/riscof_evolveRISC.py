@@ -174,6 +174,7 @@ class evolveRISC(pluginTemplate):
                 #simcmd = f'echo "NO RUN"'
             # concatenate all commands that need to be executed within a make-target.
             print(f"compile command: {cmd}")
+            print(f"sim command: {simcmd}")
             execute = '@cd {0}; {1}; {2}; {3}; {4}; {5};'.format(testentry['work_dir'], cmd,bin_cmd, hex_cmd, simcmd, disass_cm)
 
 

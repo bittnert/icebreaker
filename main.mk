@@ -11,9 +11,11 @@ PACKAGE:="sg48"
 #	gtkwave $*.sim.vcd
 	
 
-%.a: $(V_SRC) #$(MEM_FILE)
-	verilator -Wall --trace-fst --vpi --public-flat-rw --prefix $* --build "-DVL_DEBUG" -DTRACE_EXECUTION -DRISCOF --top-module $(TOP) --cc $(V_SRC) --public
+%.a: $(V_SRC) $(SIM_V_SRC) #$(MEM_FILE)
+	verilator -Wall --trace-fst --vpi --public-flat-rw --prefix $* --build "-DVL_DEBUG" -DTRACE_EXECUTION --top-module $(TOP) --cc $(V_SRC) $(SIM_V_SRC) --public
 	cp obj_dir/$*__ALL.a ./$*.a
+
+.PRECIOUS: cpu.rpt cpu.asc cpu.json
 
 
 %.mem: %.binary
@@ -27,12 +29,12 @@ PACKAGE:="sg48"
 	riscv64-linux-gnu-as $^ -o $@
 
 %.json: $(V_SRC) #$(MEM_FILE)
-	yosys -ql $*.log -p 'synth_ice40 -abc2 -dsp -spram -top $* -json $@' $^
+		yosys -ql $*.log -p 'synth_ice40 -abc9 -dsp -spram -top $* -json $@' $^
 
 %.asc: $(PIN_DEF) %.json
 	nextpnr-ice40 --$(DEVICE) $(if $(PACKAGE), --package $(PACKAGE)) $(if $(FREQ),--freq $(FREQ)) --json $(filter-out $<,$^) --pcf $< --asc $@
 
-%.bin: %.asc
+%.bin: %.asc %.rpt
 	icepack $< $@
 
 %.rpt: %.asc
@@ -47,6 +49,6 @@ sudo-prog: $(PROJ).bin
 	sudo iceprog $<
 
 clean:
-	rm -rf obj_dir *.vcd *.sim *.blif *.asc *.rpt *.bin *.json *.log $(ADD_CLEAN) *.sim $(MEM_FILE) *.a
+	rm -rf obj_dir *.vcd *.sim *.blif *.asc *.rpt *.bin *.json *.log $(ADD_CLEAN) *.sim *.a
 
 .PHONY: all 

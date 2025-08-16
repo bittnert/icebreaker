@@ -201,7 +201,7 @@ image_read_back_word_loop:
 
 .section .rodata
 hello_string:
-    .string "EvovleRISCV bootloader:\nPlese enter Size of image to laod:\0"
+    .string "EvovleRISCV bootloader:\nPlease enter Size of image to laod:\0"
 invalid_parameter_string:
     .string "Invalid parameter!\n\0"
 parameter_return_string:

@@ -3,7 +3,8 @@ module alu(input[31:0] a,
            input[31:0] b,
            output reg[31:0] result,
            input [2:0] op,
-           input aux);
+           input aux,
+           input clk);
 
     wire signed [31:0] signed_a = a;
     wire signed [31:0] signed_b = b;
@@ -11,23 +12,33 @@ module alu(input[31:0] a,
     reg [31:0] add_result, sub_result, shl_result, shr_result;
     reg [31:0] or_result, xor_result, and_result, slt_result, sltu_result;
     reg [31:0] srl_result, sra_result;
+    reg [2:0] last_op;
+    reg last_aux;
+
+    //dsp32_addsub #(.REGISTER_OUTPUT(1)) dsp(.clk(clk), .add_sub(aux), .a(a), .b(b), .y(add_result));
+
+    always @(posedge clk) begin
+        shl_result <= a << b[4:0];
+        or_result <= a | b;
+        xor_result <= a ^ b;
+        and_result <= a & b;
+        slt_result <= (signed_a < signed_b) ? 32'b1 : 32'b0;
+        sltu_result <= (a < b) ? 32'b1: 32'b0;
+        srl_result <= a >> b[4:0];
+        sra_result <= signed_a >>> b[4:0];
+        last_op <= op;
+        last_aux <= aux;
+        add_result <= a + b;
+        sub_result <= a - b;
+    end
 
     always @(*) begin
 
-        add_result = a + b;
-        sub_result = a - b;
-        shl_result = a << b[4:0];
-        or_result = a | b;
-        xor_result = a ^ b;
-        and_result = a & b;
-        slt_result = (signed_a < signed_b) ? 32'b1 : 32'b0;
-        sltu_result = (a < b) ? 32'b1: 32'b0;
-        srl_result = a >> b[4:0];
-        sra_result = signed_a >>> b[4:0];
+        //add_result = a + b;
 
-        case (op[2:0])
+        case (last_op[2:0])
             `ALU_ADD: begin
-                if (aux == 1'b1) begin 
+                if (last_aux == 1'b1) begin 
                     result = sub_result;
                 end else
                     result = add_result;
@@ -45,7 +56,7 @@ module alu(input[31:0] a,
                 result = xor_result;
             end
             `ALU_SRL: begin
-                if (aux == 1'b1) begin 
+                if (last_aux == 1'b1) begin 
                     result = sra_result;
                 end else 
                     result = srl_result;

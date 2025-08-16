@@ -52,7 +52,7 @@ addi x2, x2, %lo(0xFFFFFFFF)
 andi x15, x2, 2047
 andi x16, x2, -1000
 slli x17, x2, 20
-slli x18, x2, 32
+slli x18, x2, 31
 srli x19, x2, 10
 srai x20, x2, 10
 lui x1, %hi(0xFFFFFF00)

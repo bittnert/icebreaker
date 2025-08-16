@@ -23,6 +23,7 @@
 #define MEMORY_SIZE 524288
 
 vpiHandle vh;
+vpiHandle state;
 vpiHandle reg_mem;
 vpiHandle mem_wr;
 vpiHandle mem_en;
@@ -64,11 +65,34 @@ static void send_char(TESTBENCH<cpu> *tb, char c) {
 	//printf("Clocks per bit: %d\n", clocks_per_bit);
     t_vpi_value value;
     value.format = vpiIntVal;
+	t_vpi_value state_val;
+	state_val.format = vpiIntVal;
+	t_vpi_value pc_val;
+	pc_val.format = vpiIntVal;
     vpi_get_value(rx_fill_level, &value);
+	uint32_t counter = 0;
+	bool started = false;
     while (value.value.integer >= 10) {
 		//printf("waiting for UART Rx to be empty... %d\r", value.value.integer);
         vpi_get_value(rx_fill_level, &value);
+		
+		vpi_get_value(state, &state_val);
+		vpi_get_value(vh, &pc_val);
 		tb->tick();
+		counter++;
+		if (counter % 100000 == 0) {
+			printf("waiting for UART Rx to be empty... %d\n", value.value.integer);
+			if (started == false) {
+				started = true;
+				//tb->opentrace("cpu.fst");
+
+			}
+        }
+
+		if (state_val.value.integer == 0 && pc_val.value.integer >= 0x01000000) {
+            //tb->closetrace();
+            throw std::invalid_argument( "Wrong PC value" );
+        }
     }
 	//printf("\n");
 
@@ -112,7 +136,11 @@ void load_data(TESTBENCH<cpu> *tb, uint8_t* data, int length) {
 
 void load_binary_file(TESTBENCH<cpu> *tb, uint8_t* data, int length) {
     uint8_t length_array[9];
-    snprintf((char*)length_array, sizeof((char*)length_array), "%d\n\0", length);
+	//printf("size of array: %d\n", sizeof(length_array));
+    int ret_val = snprintf((char*)length_array, sizeof(length_array), "%d\n\0", length);
+	//printf("snprintf returned %d\n", ret_val);
+	//printf("Sending length: %s\n", (char*)length_array);
+	//printf("Length: %d\n", strlen((char*)length_array));
     load_data(tb, length_array, strlen((char*)length_array));
     wait_for_uart_tx(tb);
     load_data(tb, data, length);
@@ -120,7 +148,7 @@ void load_binary_file(TESTBENCH<cpu> *tb, uint8_t* data, int length) {
 
 
 static void get_vpi_handles() {
-	vh = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.decoder.pc", NULL);
+	vh = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.pc", NULL);
 	if (!vh) vl_fatal(__FILE__, __LINE__, "sim_main", "PC handle not found");
 
 	reg_mem = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.register_file.reg_a.mem", NULL);
@@ -137,6 +165,9 @@ static void get_vpi_handles() {
 
 	mem_hdl = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.load_store_unit.main_ram.mem", NULL);
 	if (!mem_hdl) vl_fatal(__FILE__, __LINE__, "sim_main", "Memory handle not found");
+
+	state = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.decoder.state", NULL);
+	if (!state) vl_fatal(__FILE__, __LINE__, "sim_main", "State handle not found");
 
 #if 0
 	low_mem_hdl = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.load_store_unit.main_ram.mem_low", NULL);
@@ -212,10 +243,10 @@ bool process_map_file(char* filename, uint32_t *sig_start, uint32_t *sig_end, ui
         }
 		if (std::regex_search(line, matches, ram_base_regex)) {
             std::string hex_str = matches[1].str();
-            *ram_base = std::stoul(hex_str, nullptr, 16);
+            *ram_base = std::stoul(hex_str.c_str(), nullptr, 16);
 		
             found_ram_base = true;
-            printf("Found RAM base: 0x%08x\n", ram_base);
+            printf("Found RAM base: 0x%08x %s\n", ram_base, hex_str.c_str());
         }
 	}
 
@@ -284,6 +315,10 @@ int main (int argc, char **argv)
 		printf("Error: Failed to parse map file %s\n", argv[argc-1]);
 		return 1;
     }
+	printf("RAM Base: 0x%08x\n", ram_base);
+	printf("Signature Start: 0x%08x\n", sig_start);
+	printf("Signature End: 0x%08x\n", sig_end);
+	printf("Code End: 0x%08x\n", code_end);
 
 	if (!fileExists(argv[argc-2])) {
 		printf("Error: File %s not found\n", argv[argc-2]);
@@ -329,7 +364,7 @@ int main (int argc, char **argv)
 		outfile << std::setw(8) << value << std::endl;
 	}
 	TESTBENCH<cpu> *tb = new TESTBENCH<cpu>();
-    tb->opentrace("cpu.fst");
+    //tb->opentrace("cpu.fst");
     cpu* top = tb->get_dut();
 
 	get_vpi_handles();
@@ -339,11 +374,12 @@ int main (int argc, char **argv)
 	tb->tick();
 	tb->tick();
 	top->BTN_N = 1;
-	//wait_for_uart_tx(tb);
+	wait_for_uart_tx(tb);
 	//printf("Reading memory...\n");
 
-	//load_binary_file(tb, file_data, size);
+	load_binary_file(tb, file_data, size);
 
+    //tb->opentrace("cpu.fst");
 	vpiHandle mem_entry;
 	uint32_t memory[2097152/sizeof(uint32_t)] = {0};
 	for (uint32_t i = 0; i < MEMORY_SIZE; i++) {
@@ -372,16 +408,31 @@ int main (int argc, char **argv)
 
 	//cpu_state cpu_state("data.mem");
 
+    t_vpi_value state_val;
+	state_val.format = vpiIntVal;
+	state_val.value.integer = 0x12345678;
 	vpi_get_value(vh, &pc);
+	vpi_get_value(state, &state_val);
+	while(state_val.value.integer != 0) {
+		tb->tick();
+		vpi_get_value(vh, &pc);
+		vpi_get_value(state, &state_val);
+	}
 	uint32_t counter = 0;
 	uint32_t last_pc = pc.value.integer;
 	uint32_t registers[32] = {0};
 	auto start_time = std::chrono::steady_clock::now();
 	printf("PC: 0x%08x, code end: 0x%08x\n", pc.value.integer, code_end);
+    tb->opentrace("cpu.fst");
 	while ((pc.value.integer < code_end) && !(pc.value.integer & 3 != 0) ) {
 		//printf("Counter: %d, PC: 0x%08x\r", counter, pc.value.integer);
 		tb->tick();
 		counter++;
+		vpi_get_value(state, &state_val);
+		while(state_val.value.integer!= 0) {
+			tb->tick();
+			vpi_get_value(state, &state_val);
+		}
 		vpi_get_value(vh, &pc);
 
 		auto current_time = std::chrono::steady_clock::now();
@@ -393,6 +444,7 @@ int main (int argc, char **argv)
 			start_time = current_time;
 		}
 	}
+	printf("Counter: %d, PC: 0x%08x\n", counter, pc.value.integer);
 
 	printf("Reading signature...\n");
 
