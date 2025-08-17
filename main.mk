@@ -47,6 +47,6 @@ sudo-prog: $(PROJ).bin
 	sudo iceprog $<
 
 clean:
-	rm -rf obj_dir *.vcd *.sim *.blif *.asc *.rpt *.bin *.json *.log $(ADD_CLEAN) *.sim $(MEM_FILE)
+	rm -rf obj_dir *.vcd *.sim *.blif *.asc *.rpt *.bin *.json *.log $(ADD_CLEAN) *.sim $(MEM_FILE) *.a
 
 .PHONY: all 

@@ -172,9 +172,8 @@ bool fileExists(const std::string& filename) {
     return file.good();
 }
 
-bool process_map_file(char* filename, uint32_t *sig_start, uint32_t *sig_end, uint32_t *code_end) {
+bool process_map_file(char* filename, uint32_t *sig_start, uint32_t *sig_end, uint32_t *code_end, uint32_t *ram_base) {
 	std::ifstream file(filename);
-	uint32_t ram_base = 0;
 	if (!file.is_open()) {
 		printf("Error: Could not open file %s\n", filename);
         return false;
@@ -213,7 +212,7 @@ bool process_map_file(char* filename, uint32_t *sig_start, uint32_t *sig_end, ui
         }
 		if (std::regex_search(line, matches, ram_base_regex)) {
             std::string hex_str = matches[1].str();
-            ram_base = std::stoul(hex_str, nullptr, 16);
+            *ram_base = std::stoul(hex_str, nullptr, 16);
 		
             found_ram_base = true;
             printf("Found RAM base: 0x%08x\n", ram_base);
@@ -223,9 +222,6 @@ bool process_map_file(char* filename, uint32_t *sig_start, uint32_t *sig_end, ui
 	file.close();
 
 	if (found_sig_end && found_code_end && found_sig_start && found_ram_base) {
-		*code_end -= ram_base;
-		*sig_end -= ram_base;
-		*sig_start -= ram_base;
 		return true;
 	}
 
@@ -251,7 +247,7 @@ void copy_file(const std::string& src, const std::string& dest) {
 
 int main (int argc, char **argv)
 {
-	uint32_t sig_start, sig_end, code_end;
+	uint32_t sig_start, sig_end, code_end, ram_base;
 	t_vpi_value memory_read;// = 0x12345678;
 	memory_read.format = vpiIntVal;
 	t_vpi_value pc;// = 0x12345678;
@@ -284,7 +280,7 @@ int main (int argc, char **argv)
 		std::cout << "Error: " << e.what() << '\n';
     }
 
-	if (!process_map_file(argv[argc-1], &sig_start, &sig_end, &code_end)) {
+	if (!process_map_file(argv[argc-1], &sig_start, &sig_end, &code_end, &ram_base)) {
 		printf("Error: Failed to parse map file %s\n", argv[argc-1]);
 		return 1;
     }
@@ -301,11 +297,6 @@ int main (int argc, char **argv)
 
 
 	printf("Starting simulation...\n");
-	TESTBENCH<cpu> *tb = new TESTBENCH<cpu>();
-    tb->opentrace("cpu.fst");
-    cpu* top = tb->get_dut();
-
-	get_vpi_handles();
 
 	//tb->reset();
 	std::ifstream file(argv[argc - 2], std::ios::binary|std::ios::ate);
@@ -337,6 +328,11 @@ int main (int argc, char **argv)
 		}
 		outfile << std::setw(8) << value << std::endl;
 	}
+	TESTBENCH<cpu> *tb = new TESTBENCH<cpu>();
+    tb->opentrace("cpu.fst");
+    cpu* top = tb->get_dut();
+
+	get_vpi_handles();
 	outfile.close();
 	top->BTN_N = 0;
 	tb->tick();
@@ -351,41 +347,6 @@ int main (int argc, char **argv)
 	vpiHandle mem_entry;
 	uint32_t memory[2097152/sizeof(uint32_t)] = {0};
 	for (uint32_t i = 0; i < MEMORY_SIZE; i++) {
-#if 0
-		mem_entry = vpi_handle_by_index(high_mem_hdl, i);
-		if (mem_entry) {
-			s_vpi_value value;
-			value.format = vpiIntVal;
-			vpi_get_value(mem_entry, &value);
-			memory[i] = value.value.integer;
-		#if 0
-			if (i < 100)
-				printf("Memory[%d]: 0x%08x\n", i, value.value.integer);
-		#endif
-		}
-		else {
-			//printf("Failed to get memory element\n");
-		}
-		memory[i] = memory [i] << 16;
-		mem_entry = vpi_handle_by_index(low_mem_hdl, i);
-		if (mem_entry) {
-			s_vpi_value value;
-            value.format = vpiIntVal;
-            vpi_get_value(mem_entry, &value);
-            memory[i] |= value.value.integer;
-			#if 0
-			if (i < 100)
-				printf("Memory[%d]: 0x%08x\n", i, value.value.integer);
-				#endif
-		}
-		else {
-			//printf("Failed to get memory element\n");
-		}
-		char temp_str[100];
-		snprintf(temp_str, 100, "Reading back memory: %d/%d\n", i, MEMORY_SIZE);
-		log_data(temp_str);
-#else
-
 		mem_entry = vpi_handle_by_index(mem_hdl, i);
 		if (mem_entry) {
 			s_vpi_value value;
@@ -396,7 +357,6 @@ int main (int argc, char **argv)
 		char temp_str[100];
 		snprintf(temp_str, 100, "Reading back memory: %d/%d\n", i, MEMORY_SIZE);
 		log_data(temp_str);
-#endif 
 	}
 	printf("comparing %d bytes of memory...\n", size);
 	if (memcmp(memory, file_data, size) == 0) {
@@ -417,12 +377,12 @@ int main (int argc, char **argv)
 	uint32_t last_pc = pc.value.integer;
 	uint32_t registers[32] = {0};
 	auto start_time = std::chrono::steady_clock::now();
+	printf("PC: 0x%08x, code end: 0x%08x\n", pc.value.integer, code_end);
 	while ((pc.value.integer < code_end) && !(pc.value.integer & 3 != 0) ) {
 		//printf("Counter: %d, PC: 0x%08x\r", counter, pc.value.integer);
 		tb->tick();
 		counter++;
 		vpi_get_value(vh, &pc);
-		//printf("PC: 0x%08x, code end: 0x%08x\n", pc.value.integer, code_end);
 
 		auto current_time = std::chrono::steady_clock::now();
 
@@ -432,34 +392,6 @@ int main (int argc, char **argv)
 			log_data("PC: 0x" + std::to_string(pc.value.integer));
 			start_time = current_time;
 		}
-
-		#if 0
-		if (pc.value.integer!= last_pc) {
-			last_pc = pc.value.integer;
-			//cpu_state.execute();
-			for (uint32_t i = 0; i < 32; i++) {
-				vpiHandle element = vpi_handle_by_index(reg_mem, i);
-				if (element) {
-					s_vpi_value value;
-                    value.format = vpiIntVal;
-                    vpi_get_value(element, &value);
-					registers[i] = value.value.integer;
-				}
-				else {
-					printf("Failed to get register element\n");
-				}
-			}
-#if 0
-			if (!cpu_state.check_state(pc.value.integer, registers, NULL)) {
-				printf("State mismatch at PC 0x%08x\n", pc.value.integer);
-				printf("Registers:\n");
-				for (uint32_t i = 0; i < 32; i++) {
-					printf("R%d: 0x%08x\n", i, registers[i]);
-				}
-			}
-			#endif
-		}
-		#endif
 	}
 
 	printf("Reading signature...\n");
@@ -489,7 +421,7 @@ int main (int argc, char **argv)
 			}
 			memory_file << std::setw(8) << std::setfill('0') << i*4 << ": 0x" << std::setw(8) << std::setfill('0') << mem << std::endl;
 
-			if (i >= sig_start/sizeof(uint32_t) && i < sig_end/sizeof(uint32_t)) {
+			if (i >= (sig_start - ram_base)/sizeof(uint32_t) && i < (sig_end - ram_base)/sizeof(uint32_t)) {
 				signature_file << std::setw(8) << std::setfill('0') << mem << std::endl;
 			}
 			char temp_str[100];

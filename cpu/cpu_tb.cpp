@@ -41,11 +41,11 @@ static void get_vpi_handles() {
 	tx_fill_level = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.load_store_unit.uart.uart.tx_fifo_fill_lvl", NULL);
     if (!tx_fill_level) vl_fatal(__FILE__, __LINE__, "sim_main", "tx fill level handle not found");
 
-	mem_low_hdl = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.load_store_unit.main_ram.mem_low", NULL);
-	if (!mem_low_hdl) vl_fatal(__FILE__, __LINE__, "sim_main", "Memory low handle not found");
+	//mem_low_hdl = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.load_store_unit.main_ram.mem_low", NULL);
+	//if (!mem_low_hdl) vl_fatal(__FILE__, __LINE__, "sim_main", "Memory low handle not found");
 
-	mem_high_hdl = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.load_store_unit.main_ram.mem_high", NULL);
-	if (!mem_high_hdl) vl_fatal(__FILE__, __LINE__, "sim_main", "Memory high handle not found");
+	//mem_high_hdl = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.load_store_unit.main_ram.mem_high", NULL);
+	//if (!mem_high_hdl) vl_fatal(__FILE__, __LINE__, "sim_main", "Memory high handle not found");
 }
 
 #define BAUDRATE 57600
@@ -83,7 +83,6 @@ int main (int argc, char **argv)
     tb->opentrace("cpu.fst");
     //cpu* dut = tb->get_dut();
     cpu* top = tb->get_dut();
-
 	//cpu* top = new cpu;  // Create an instance of the top-level module
 	get_vpi_handles();
 	//dut->register_file->reg_a->mem[0] = 10;
@@ -131,6 +130,7 @@ int main (int argc, char **argv)
 	}
 	printf("\nExecution finished\n");
 	
+	/*
 	for (int i = 0; i < (length + 3)/4; i++) {
 		vpiHandle low_element = vpi_handle_by_index(mem_low_hdl, i);
 		vpiHandle high_element = vpi_handle_by_index(mem_high_hdl, i);
@@ -143,6 +143,7 @@ int main (int argc, char **argv)
 			printf("Memory element %d: 0x%04x%04x\n", i,  high_value.value.integer, low_value.value.integer);
 		}
 	}
+		*/
     return 0;
 }
 

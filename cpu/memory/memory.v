@@ -88,10 +88,10 @@ module memory
             if (we[1]) mem[addr[20:2]][7:4] <= data_in_low[7:4];
             if (we[2]) mem[addr[20:2]][11:8] <= data_in_low[11:8];
             if (we[3]) mem[addr[20:2]][15:12] <= data_in_low[15:12];
-            if (we[4]) mem[addr[20:2]][3:0] <= data_in_high[3:0];
-            if (we[5]) mem[addr[20:2]][7:4] <= data_in_high[7:4];
-            if (we[6]) mem[addr[20:2]][11:8] <= data_in_high[11:8];
-            if (we[7]) mem[addr[20:2]][15:12] <= data_in_high[15:12];
+            if (we[4]) mem[addr[20:2]][19:16] <= data_in_high[3:0];
+            if (we[5]) mem[addr[20:2]][23:20] <= data_in_high[7:4];
+            if (we[6]) mem[addr[20:2]][27:24] <= data_in_high[11:8];
+            if (we[7]) mem[addr[20:2]][31:28] <= data_in_high[15:12];
         end
     end
 

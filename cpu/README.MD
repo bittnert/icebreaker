@@ -66,7 +66,7 @@ Metrics of the current implementation:
 
 - [ ] Add on-chip bus interface (e.g. Wishbone) to allow for more and more complex peripherals
 - [ ] Update CPU to allow for delayed read and write operations (to allow more complex perfipherals)
-- [ ] Update RISC-V Architecture test suite to run in simulation
+- [x] Update RISC-V Architecture test suite to run in simulation
 - [ ] Add interrupt support
 - [x] Add first benchmarks to measure performance
 - [x] Add load/store unit to have different memories and peripherals
