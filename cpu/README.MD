@@ -17,7 +17,8 @@ The current implementation is a simple RISC-V CPU with:
 - RV32I base integer instruction set support
 - Multi-cycle execution model (5 cycles per instruction)
 - State machine-based control flow (Fetch, Decode, Execute, Memory, Writeback)
-- No pipelining (instructions execute sequentially)
+- Pipeline stages: Fetch, Decode, Execute, Memory, Writeback
+- No hazard control currently (instructions execute to end of pipeline before the next instruction is executed)
 - Basic memory interface
 - Minimal control logic
 - Prepared for future pipelining implementation
@@ -27,15 +28,15 @@ Metrics of the current implementation:
 
 - **CPI (Cycles Per Instruction)**: 5
 - **IPC (Instructions Per Cycle)**: 0.2
-- **Clock frequency**: 14.31 MHz
+- **Clock frequency**: 20.73 MHz
 - **Resource utilization**:
  
 | Resource | Used | Available | Utilization |
 |----------|------|-----------|-------------|
-| ICESTORM_LC | 2356 | 5280 | 44% |
+| ICESTORM_LC | 2841 | 5280 | 53% |
 | ICESTORM_RAM | 6 | 30 | 20% |
 | SB_IO | 4 | 96 | 4% |
-| SB_GB | 7 | 8 | 87% |
+| SB_GB | 6 | 8 | 75% |
 | ICESTORM_PLL | 0 | 1 | 0% |
 | SB_WARMBOOT | 0 | 1 | 0% |
 | ICESTORM_DSP | 0 | 8 | 0% |
@@ -49,6 +50,7 @@ Metrics of the current implementation:
 | ICESTORM_SPRAM | 2 | 4 | 50% |
 
 - **Benchmark scores**: 
+Measured at 12 MHz clock frequency.
 
 | Benchmark | Score |
 |-----------|-------|
@@ -64,8 +66,9 @@ Metrics of the current implementation:
 
 ## Next Steps
 
-- [ ] Add on-chip bus interface (e.g. Wishbone) to allow for more and more complex peripherals
+- [ ] Add on-chip bus interface (e.g. Wishbone) to allow for more and more complex peripherals as well as higher clock frequencies
 - [ ] Update CPU to allow for delayed read and write operations (to allow more complex perfipherals)
+- [ ] Add hazard control to enable true pipelined execution
 - [x] Update RISC-V Architecture test suite to run in simulation
 - [ ] Add interrupt support
 - [x] Add first benchmarks to measure performance
