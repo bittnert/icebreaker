@@ -6,7 +6,7 @@ module uart_tx(input CLK, input rst_n, output TX, input [7:0] data, input tx_sta
 		ST_TX = 2'b10,
 		ST_STOP = 2'b11;
 
-	reg [1:0] tx_state = ST_IDLE;
+	reg [1:0] tx_state;// = ST_IDLE;
 	reg [7:0] tx_data;
 	reg [4:0] tx_count;
 	reg [20:0] prescaler;

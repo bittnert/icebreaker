@@ -39,3 +39,33 @@
 
 `define ROM_SIZE    32'h400
 `define RAM_SIZE    32'h1000
+
+`define RD_ADDR_BASE        0
+`define RD_ADDR_WIDTH       5
+`define JUMP_EN_BASE        (`RD_ADDR_BASE + `RD_ADDR_WIDTH)
+`define JUMP_EN_SIZE       1
+`define REG_EN_BASE         (`JUMP_EN_BASE + `JUMP_EN_SIZE)
+`define REG_EN_WIDTH        1
+`define REG_IN_SEL_BASE     (`REG_EN_BASE + `REG_EN_WIDTH)
+`define REG_IN_SEL_WIDTH    2 
+`define WRITE_BACK_SIZE     (`REG_IN_SEL_BASE + `REG_IN_SEL_WIDTH)
+`define MEM_EN_BASE         `WRITE_BACK_SIZE
+`define MEM_EN_WIDTH        1
+`define MEM_WR_BASE         (`MEM_EN_BASE + `MEM_EN_WIDTH)
+`define MEM_WR_WIDTH        1
+`define MEM_ADDR_SEL_BASE   (`MEM_WR_BASE + `MEM_WR_WIDTH)
+`define MEM_ADDR_SEL_WIDTH  1
+`define MEM_SIZE_BASE       (`MEM_ADDR_SEL_BASE + `MEM_ADDR_SEL_WIDTH) 
+`define MEM_SIZE_WIDTH      3
+`define LOAD_STORE_SIZE     (`MEM_SIZE_BASE + `MEM_SIZE_WIDTH)
+`define IMM_MUX_SEL_BASE    `LOAD_STORE_SIZE
+`define IMM_MUX_SEL_WIDTH   1
+`define ALU_SEL_BASE        (`IMM_MUX_SEL_BASE + `IMM_MUX_SEL_WIDTH)
+`define ALU_SEL_WIDTH       3
+`define BRANCH_SEL_BASE     (`ALU_SEL_BASE + `ALU_SEL_WIDTH)
+`define BRANCH_SEL_WIDTH    3 
+`define ALU_A_SEL_BASE      (`BRANCH_SEL_BASE + `BRANCH_SEL_WIDTH)
+`define ALU_A_SEL_WIDTH     1 
+`define ALU_AUX_BASE        (`ALU_A_SEL_BASE + `ALU_A_SEL_WIDTH) 
+`define ALU_AUX_WIDTH       1
+`define OP_SIZE             (`ALU_AUX_BASE + `ALU_AUX_WIDTH)

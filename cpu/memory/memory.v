@@ -103,9 +103,25 @@ module memory
     wire[31:0] shift;
     reg[31:0] shift_wr;
     wire[31:0] mask;
-    reg[31:0] temp;
+    //var[31:0] temp;
     wire[31:0] temp_in;
     reg[7:0] we;
+    reg[2:0] last_size;
+    reg[2:0] rd_size_q;
+    reg[31:0] rd_addr_q;
+    reg[31:0] rd_mask_q;
+    reg[31:0] rd_shift_q;
+
+    always @(posedge CLK) begin
+        last_size <= size;
+    end
+
+    always @(posedge CLK) begin
+        rd_addr_q <= addr;
+        rd_size_q <= size;
+        rd_mask_q <= mask;
+        rd_shift_q <= shift;
+    end
 
     always @ (*) begin
         if (wr && en) begin
@@ -132,9 +148,22 @@ module memory
             we       = 8'h00;
         end
     end
+    wire [31:0] raw;
+    assign raw = ({data_out_high, data_out_low} & rd_mask_q) >> rd_shift_q;
 
+    always @(*) begin
+        case (rd_size_q)
+            3'b000: data_out = {{24{raw[7]}},  raw[7:0]};   // LB
+            3'b001: data_out = {{16{raw[15]}}, raw[15:0]};  // LH
+            3'b010: data_out = raw;                         // LW
+            3'b100: data_out = {24'b0, raw[7:0]};           // LBU
+            3'b101: data_out = {16'b0, raw[15:0]};          // LHU
+            default: data_out = 32'b0;
+        endcase
+    end
+/*
     always @ (*) begin
-        case (size)
+        case (last_size)
             3'b000: begin
                 temp = ({data_out_high, data_out_low} & mask) >> shift; 
                 data_out = {{24{temp[7]}}, temp [7:0]};
@@ -171,7 +200,7 @@ module memory
             end
         endcase
     end
-
+*/
     assign temp_in = (data_in << shift);
     assign data_in_low = temp_in[15:0];
     assign data_in_high = temp_in[31:16];

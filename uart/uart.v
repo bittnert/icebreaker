@@ -13,7 +13,12 @@ module uart (input CLK,
              output[5:0] tx_fill_lvl,
              output[5:0] rx_fill_lvl );
 
-localparam[20:0] PRESCALER = 21'hD9;
+//baudrate 57600
+//localparam[20:0] PRESCALER = 21'hD9;
+// Baudrate 19200
+//localparam[20:0] PRESCALER = 21'h271;
+// Baudrate 9600
+localparam[20:0] PRESCALER = 21'h4E2;
 
 wire empty; 
 wire rx_ready;

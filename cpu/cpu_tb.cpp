@@ -20,7 +20,7 @@ vpiHandle mem_low_hdl;
 vpiHandle mem_high_hdl;
 
 static void get_vpi_handles() {
-	vh = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.decoder.pc", NULL);
+	vh = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.pc", NULL);
 	if (!vh) vl_fatal(__FILE__, __LINE__, "sim_main", "PC handle not found");
 
 	reg_mem = vpi_handle_by_name((PLI_BYTE8*)"TOP.cpu.register_file.reg_a.mem", NULL);

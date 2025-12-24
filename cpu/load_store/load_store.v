@@ -19,23 +19,32 @@ module load_store (
     wire ram_exception;
     wire [7:0] uart_data_in;
     wire uart_en, ram_en, rom_en, timer_en;
+    reg last_uart_en, last_ram_en, last_rom_en, last_timer_en;
     wire [3:0] ram_mask; 
     assign uart_en = (en && (addr[31:24] == 8'h02));
     assign ram_en = (en && (addr[31:24] == 8'h01));
     assign rom_en = (en && (addr[31:24] == 8'h00));
     assign timer_en = (en && (addr[31:24] == 8'h03));
     assign exception_out = (rom_exception || ram_exception);
-    assign data_out = (ram_en && !wr)? ram_data : (uart_en && !wr)? uart_data_out : (rom_en) ? rom_data: (timer_en)? timer_counter : 32'h00000000;
+    assign data_out = (last_ram_en && !wr)? ram_data : (last_uart_en && !wr)? uart_data_out : (last_rom_en) ? rom_data: (last_timer_en)? timer_counter : 32'h00000000;
     assign ram_mask = (ram_en) ? 4'hF: 4'h0;
     //assign data_out = uart_data_out;
 
-    rom #(.SIZE($clog2(1024)), .MEMFILE("bootloader/bootloader.mem")) bootloader (
+    always @(posedge CLK) begin
+        last_ram_en <= ram_en;
+        last_uart_en <= uart_en;
+        last_rom_en  <= rom_en;
+        last_timer_en <= timer_en;
+    end
+
+    rom #(.SIZE(10), .MEMFILE("bootloader/bootloader.mem")) bootloader (
                                                 .CLK(CLK), 
-                                                .addr(addr[$clog2(1024) + 2:0]),
+                                                .addr(addr[10 + 2:0]),
                                                 .size(size),
                                                 .data(rom_data),
                                                 .exception_out(rom_exception),
-                                                .en(rom_en));
+                                                .en(rom_en),
+                                                .reset(reset));
     
     /*
     memory #(.SIZE($clog2(512))) main_ram (

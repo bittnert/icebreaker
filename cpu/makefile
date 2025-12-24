@@ -2,6 +2,7 @@ PROJ := cpu
 PIN_DEF := ../icebreaker.pcf
 DEVICE := up5k
 
+FREQ := 12
 
 V_SRC := cpu.v \
 		memory/memory.v \
@@ -12,6 +13,7 @@ V_SRC := cpu.v \
 		decoder/decoder.v \
 		decoder/imm_decoder.v \
 		alu/alu.v \
+		alu/dsp32_addsub.v \
 		compare/compare.v \
 		load_store/load_store.v \
 		rom/rom.v \
@@ -24,6 +26,8 @@ V_SRC := cpu.v \
 		../utils/fifo.v \
 		../utils/seven_seg.v \
 		../timer/timer.v 
+
+SIM_V_SRC := simulation/SB_MAC16.v
 
 SIM_SRC := /usr/share/verilator/include/verilated.cpp \
 		/usr/share/verilator/include/verilated_vcd_c.cpp \
