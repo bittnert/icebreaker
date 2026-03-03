@@ -5,8 +5,10 @@
 
 PACKAGE:="sg48"
 
+CXXFLAGS += -std=gnu++20
+
 %.sim: $(SIM_SRC) %_tb.cpp  %.a $(TOP).a 
-	$(CXX) $(addprefix -I, $(INC_DIR)) -g -DTRACE_EXECUTION  $^ -o $*.sim -lz
+	$(CXX) $(CXXFLAGS) $(addprefix -I, $(INC_DIR)) -g -DTRACE_EXECUTION  $^ -o $*.sim -lz
 #	./$*.sim
 #	gtkwave $*.sim.vcd
 	

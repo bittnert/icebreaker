@@ -105,6 +105,8 @@ class evolveRISC(pluginTemplate):
             self.isa += 'd'
         if "C" in ispec["ISA"]:
             self.isa += 'c'
+        if "zicsr" in ispec["ISA"].lower():
+            self.isa += 'zicsr'
 
         #TODO: The following assumes you are using the riscv-gcc toolchain. If
         #      not please change appropriately
@@ -157,7 +159,7 @@ class evolveRISC(pluginTemplate):
             # hex_cmd = f"elf2hex 4 65536 {test_dir}/{elf} 0 > {os.path.dirname(os.path.abspath(self.dut_exe))}/data.mem"
             # Get the size of the ELF file sections to determine appropriate hex file size
 
-            hex_cmd = f"elf2hex 4 2097152 {test_dir}/{elf} 0 > {test_dir}/{elf}.hex"
+            #hex_cmd = f"elf2hex 4 2097152 {test_dir}/{elf} 0 > {test_dir}/{elf}.hex"
 
             disass_cm = f"riscv{self.xlen}-unknown-elf-objdump -d {elf} > {test_dir}/ref.disass"
 
@@ -175,7 +177,7 @@ class evolveRISC(pluginTemplate):
             # concatenate all commands that need to be executed within a make-target.
             print(f"compile command: {cmd}")
             print(f"sim command: {simcmd}")
-            execute = '@cd {0}; {1}; {2}; {3}; {4}; {5};'.format(testentry['work_dir'], cmd,bin_cmd, hex_cmd, simcmd, disass_cm)
+            execute = '@cd {0}; {1}; {2}; {3}; {4};'.format(testentry['work_dir'], cmd,bin_cmd, simcmd, disass_cm)
 
 
             # create a target. The makeutil will create a target with the name "TARGET<num>" where

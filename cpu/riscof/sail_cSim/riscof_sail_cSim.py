@@ -52,13 +52,13 @@ class sail_cSim(pluginTemplate):
         ispec = utils.load_yaml(isa_yaml)['hart0']
         self.xlen = ('64' if 64 in ispec['supported_xlen'] else '32')
         self.isa = 'rv' + self.xlen
-        self.compile_cmd = self.compile_cmd+' -mabi='+('lp64 ' if 64 in ispec['supported_xlen'] else 'ilp32 ')
+        self.compile_cmd = self.compile_cmd+' -mno-relax -mabi='+('lp64 ' if 64 in ispec['supported_xlen'] else 'ilp32 ')
         if "I" in ispec["ISA"]:
             self.isa += 'i'
         if "M" in ispec["ISA"]:
             self.isa += 'm'
-        if "C" in ispec["ISA"]:
-            self.isa += 'c'
+        #if "C" in ispec["ISA"]:
+        #    self.isa += 'c'
         if "F" in ispec["ISA"]:
             self.isa += 'f'
         if "D" in ispec["ISA"]:
@@ -101,7 +101,7 @@ class sail_cSim(pluginTemplate):
             execute += self.objdump_cmd.format(elf, self.xlen, 'ref.disass')
             sig_file = os.path.join(test_dir, self.name[:-1] + ".signature")
 
-            execute += self.sail_exe[self.xlen] + ' --test-signature={0} {1} > {2}.log 2>&1;'.format(sig_file, elf, test_name)
+            execute += self.sail_exe[self.xlen] + ' -C --test-signature={0} {1} > {2}.log 2>&1;'.format(sig_file, elf, test_name)
 
             cov_str = ' '
             for label in testentry['coverage_labels']:
@@ -119,6 +119,6 @@ class sail_cSim(pluginTemplate):
 
 
             execute+=coverage_cmd
-
+            print("Sail execute: {}".format(execute))
             make.add_target(execute)
         make.execute_all(self.work_dir)

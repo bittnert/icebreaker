@@ -57,6 +57,16 @@ public:
 		return dut;
 	}
 
+	void eval()
+	{
+		tickcount++;
+		dut->eval();
+		if (trace)
+		{
+			trace->dump(10*tickcount - 2);
+		}
+	}
+
 	void tick(void)
 	{
 		tickcount++;

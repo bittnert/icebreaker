@@ -4,7 +4,7 @@ ENTRY(rvtest_entry_point)
 MEMORY
 {
     rom (rx) : ORIGIN = 0x00000000, LENGTH = 4K
-    ram (rw) : ORIGIN = 0x01000000, LENGTH = 2M
+    ram (rw) : ORIGIN = 0x80000000, LENGTH = 2M
 }
 
 SECTIONS

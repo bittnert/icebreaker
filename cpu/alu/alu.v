@@ -15,6 +15,8 @@ module alu(input[31:0] a,
     reg [2:0] last_op;
     reg last_aux;
 
+    /*Using DSP works in simulation but not in the FPGA. Using general logic below only adds 
+    about 20 LUT to the usage, therefore, the DSP is currently not being used.*/
     //dsp32_addsub #(.REGISTER_OUTPUT(1)) dsp(.clk(clk), .add_sub(aux), .a(a), .b(b), .y(add_result));
 
     always @(posedge clk) begin

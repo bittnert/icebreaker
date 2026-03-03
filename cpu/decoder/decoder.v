@@ -8,7 +8,14 @@ module decoder (
         output reg [`OP_SIZE:0] ctrl_vec,
         output [4:0] rs1_addr,
         output [4:0] rs2_addr,
-        output reg [31:0] imm_val
+        output reg [31:0] imm_val,
+        output reg illegal_instruction_out,
+        output reg[1:0] csr_control_signal,
+        output reg[11:0] csr_rw_addr,
+        output reg csr_mret,
+        output reg trap_ecall,
+        output reg trap_ebreak,
+        output reg csr_data_sel
         //output reg [31:0] pc /*verilator public_flat_rd*/
         /*
         output [4:0] rd_addr,
@@ -38,7 +45,7 @@ module decoder (
 
     reg [2:0] state/*verilator public_flat_rd*/;
     reg reg_write;
-    reg [2:0] imm_type;
+    reg [3:0] imm_type;
     reg branch;
     reg store;
     reg load;
@@ -47,20 +54,19 @@ module decoder (
     // Add this internal register to capture a possible combinational loop
     reg internal_alu_a_sel;
     reg [2:0] alu_sel, branch_sel;
-    reg [1:0] rd_in_sel;
+    reg [2:0] rd_in_sel;
     reg imm_mux_sel;
     reg alu_aux;
-    //reg [31:0] local_instr;
+    reg illegal_instruction; 
+    reg [1:0] int_csr_control;
+    reg [11:0] int_csr_rw_addr;
+    reg int_csr_mret;
+    reg int_csr_data_sel;
+    reg ecall, ebreak;
     wire [`OP_SIZE:0] nop_ctrl_vec;
     wire [31:0] loc_imm;
-    //assign alu_sel = local_instr[14:12];
-    //assign func7 = local_instr[31:25];
     assign rs1_addr = instr[19:15];
     assign rs2_addr = instr[24:20];
-    //assign mem_addr_sel = load | store;
-    // Ensure to not have a cominational loop which happens in case alu_a_sel is 0 and mem_addr_sel is 1
-    //assign alu_a_sel = (!internal_alu_a_sel && mem_addr_sel) ? 1 : internal_alu_a_sel;
-    //assign alu_a_sel = mem_addr_sel ? 1'b1 : internal_alu_a_sel;
 
     imm_decoder d0(.instr(instr),.instr_type(imm_type), .imm_value(loc_imm));
 
@@ -87,6 +93,11 @@ module decoder (
             state     <= ST_FETCH;
             ctrl_vec <= nop_ctrl_vec;
             fetch_stage <= 1;
+            csr_control_signal <= 0; //control signal 0 means don't read or write
+            csr_rw_addr <= 0;
+            csr_mret <= 0;
+            trap_ebreak <= 0;
+            trap_ecall <= 0;
         end else begin
             case (state)
                 ST_FETCH: begin
@@ -95,6 +106,13 @@ module decoder (
                     fetch_stage <= 0;
                     imm_val <= 32'b0;
                     //local_instr <= instr;
+                    illegal_instruction_out <= 0;
+                    csr_control_signal <= 0; 
+                    csr_rw_addr <= 0;
+                    csr_mret <= 0;
+                    csr_data_sel <= 0;
+                    trap_ebreak <= 0;
+                    trap_ecall <= 0;
                 end
                 ST_DECODE: begin
                     state <= ST_OP;
@@ -116,27 +134,62 @@ module decoder (
                     ctrl_vec[`ALU_AUX_BASE + `ALU_AUX_WIDTH - 1:`ALU_AUX_BASE] <= alu_aux;
                     imm_val <= loc_imm;
                     fetch_stage <= 0;
+                    illegal_instruction_out <= illegal_instruction;
+                    csr_control_signal <= int_csr_control; 
+                    csr_rw_addr <= int_csr_rw_addr;
+                    csr_mret <= int_csr_mret;
+                    csr_data_sel <= int_csr_data_sel;
+                    trap_ebreak <= ebreak;
+                    trap_ecall <= ecall;
                 end
                 ST_OP: begin
                     ctrl_vec <= nop_ctrl_vec;
                     imm_val <= 32'b0;
                     state <= ST_LD_ST;
+                    illegal_instruction_out <= 0;
+                    csr_control_signal <= 0; 
+                    csr_rw_addr <= 0;
+                    csr_mret <= 0;
+                    csr_data_sel <= 0;
+                    trap_ebreak <= 0;
+                    trap_ecall <= 0;
                 end
                 ST_LD_ST: begin
                     ctrl_vec <= nop_ctrl_vec;
                     imm_val <= 32'b0;
                     state <= ST_WRITE;
+                    illegal_instruction_out <= 0;
+                    csr_control_signal <= 0; 
+                    csr_rw_addr <= 0;
+                    csr_mret <= 0;
+                    csr_data_sel <= 0;
+                    trap_ebreak <= 0;
+                    trap_ecall <= 0;
                 end
                 ST_WRITE: begin
                     ctrl_vec <= nop_ctrl_vec;
                     imm_val <= 32'b0;
                     state <= ST_FETCH;
                     fetch_stage <= 1;
+                    illegal_instruction_out <= 0;
+                    csr_control_signal <= 0; 
+                    csr_rw_addr <= 0;
+                    csr_mret <= 0;
+                    csr_data_sel <= 0;
+                    trap_ebreak <= 0;
+                    trap_ecall <= 0;
                 end
                 default: begin
                     ctrl_vec <= nop_ctrl_vec;
                     imm_val <= 32'b0;
                     state <= ST_FETCH;
+                    illegal_instruction_out <= 0;
+                    csr_control_signal <= 0; 
+                    csr_rw_addr <= 0;
+                    csr_mret <= 0;
+                    csr_data_sel <= 0;
+                    trap_ebreak <= 0;
+                    trap_ecall <= 0;
                 end
             endcase
         end
@@ -158,13 +211,19 @@ module decoder (
                 load = 0;
                 loc_mem_size = 3'b010;
                 jump = 0;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
             `OP_IMM_OPCODE: begin
                 reg_write = 1;
                 imm_mux_sel = 1;
                 internal_alu_a_sel = 1;
                 alu_sel = instr[14:12];
-                //alu_aux = local_instr[30];
                 alu_aux = (instr[14:12] == 3'b101) ?instr[30] : 0;
                 imm_type = `I_TYPE;
                 branch_sel = `COMPARE_INV;
@@ -174,6 +233,13 @@ module decoder (
                 load = 0;
                 loc_mem_size = 3'b010;
                 jump = 0;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
             `OP_OPCODE: begin
                 reg_write = 1;
@@ -189,6 +255,13 @@ module decoder (
                 load = 0;
                 loc_mem_size = 3'b010;
                 jump = 0;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
             `AUIPC_OPCODE: begin
                 reg_write = 1;
@@ -206,6 +279,13 @@ module decoder (
                 load = 0;
                 loc_mem_size = 3'b010;
                 jump = 0;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
             `BRANCH_OPCODE: begin
                 reg_write = 0;
@@ -222,6 +302,13 @@ module decoder (
                 load = 0;
                 loc_mem_size = 3'b010;
                 jump = 0;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
             `JAL_OPCODE: begin
                 reg_write = 1;
@@ -238,6 +325,13 @@ module decoder (
                 load = 0;
                 loc_mem_size = 3'b010;
                 jump = 1;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
             `JALR_OPCODE: begin
                 reg_write = 1;
@@ -254,6 +348,13 @@ module decoder (
                 load = 0;
                 loc_mem_size = 3'b010;
                 jump = 1;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
             `STORE_OPCODE: begin
                 reg_write = 0;
@@ -270,6 +371,13 @@ module decoder (
                 load = 0;
                 loc_mem_size = instr[14:12];
                 jump = 0;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
             `LOAD_OPCODE: begin
                 reg_write = 1;
@@ -286,6 +394,157 @@ module decoder (
                 load = 1;
                 loc_mem_size = instr[14:12];
                 jump = 0;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_mret = 0;
+                int_csr_rw_addr = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
+            end
+            // CSR instruction
+            `SYSTEM_OPCODE: begin
+                case(instr[14:12]) 
+                    3'b000: begin
+                        if (instr[31:20] == 12'b001100000010) begin
+                            //MRET instruction
+                            reg_write = 0; //MRET does not write to register
+                            imm_mux_sel = 0;
+                            internal_alu_a_sel = 1;
+                            alu_sel = 3'b000;
+                            alu_aux = 0;
+                            imm_type    = `B_TYPE;
+                            branch_sel = `COMPARE_INV;
+                            branch = 0;
+                            store = 0;
+                            rd_in_sel = 0;
+                            load = 0;
+                            loc_mem_size = 3'b010;
+                            jump = 0;
+                            illegal_instruction = 0;
+                            int_csr_control = 0; 
+                            int_csr_rw_addr = 0;
+                            int_csr_mret = 1;
+                            int_csr_data_sel = 0;
+                            ebreak = 0;
+                            ecall = 0;
+                        end else if (instr[31:20] == 12'h0) begin
+                            // ECALL instruction
+                            ecall = 1;
+                            ebreak = 0;
+                            reg_write = 0;
+                            imm_mux_sel = 0;
+                            internal_alu_a_sel = 1;
+                            alu_sel = 3'b000;
+                            alu_aux = 0;
+                            imm_type    = `B_TYPE;
+                            branch_sel = `COMPARE_INV;
+                            branch = 0;
+                            store = 0;
+                            rd_in_sel = 0;
+                            load = 0;
+                            loc_mem_size = 3'b010;
+                            jump = 0;
+                            illegal_instruction = 0;
+                            int_csr_control = 0; 
+                            int_csr_rw_addr = 0;
+                            int_csr_mret = 0;
+                            int_csr_data_sel = 0;
+                        end else if (instr[31:20] == 12'h1) begin
+                            // EBREAK instruction
+                            ebreak = 1;
+                            ecall = 0;
+                            reg_write = 0;
+                            imm_mux_sel = 0;
+                            internal_alu_a_sel = 1;
+                            alu_sel = 3'b000;
+                            alu_aux = 0;
+                            imm_type    = `B_TYPE;
+                            branch_sel = `COMPARE_INV;
+                            branch = 0;
+                            store = 0;
+                            rd_in_sel = 0;
+                            load = 0;
+                            loc_mem_size = 3'b010;
+                            jump = 0;
+                            illegal_instruction = 0;
+                            int_csr_control = 0; 
+                            int_csr_rw_addr = 0;
+                            int_csr_mret = 0;
+                            int_csr_data_sel = 0;
+                        end else begin
+                            //invalid instruction, we don't support any other system instruction
+                            ebreak = 0;
+                            ecall = 0;
+                            reg_write = 0;
+                            imm_mux_sel = 0; 
+                            internal_alu_a_sel = 1;
+                            alu_sel = 3'b000;
+                            alu_aux = 0;
+                            imm_type    = `B_TYPE;
+                            branch_sel = `COMPARE_INV;
+                            branch = 0;
+                            store = 0;
+                            rd_in_sel = 0;
+                            load = 0;
+                            loc_mem_size = 3'b010;
+                            jump = 0;
+                            illegal_instruction = 1;
+                            int_csr_control = 0; 
+                            int_csr_rw_addr = 0;
+                            int_csr_mret = 0;
+                            int_csr_data_sel = 0;
+                        end
+                    end
+                    default: begin
+                    //CSR register
+                    reg_write = 1;
+                    imm_mux_sel = 0;
+                    // We don't care about this flag as the ALU output is not used
+                    internal_alu_a_sel = 1;
+                    // We don't care about this flag as the ALU output is not used
+                    alu_sel = 3'b000;
+                    alu_aux = 0;
+                    imm_type = `SYS_TYPE;
+                    branch_sel = `COMPARE_INV;
+                    branch = 0;
+                    rd_in_sel = 4; //still to be selected as CSR output needs to be selected here
+                    store = 0;
+                    load = 0;
+                    loc_mem_size = 0;
+                    jump = 0;
+                    illegal_instruction = 0;
+                    int_csr_control = instr[13:12]; 
+                    int_csr_rw_addr = instr[31:20];
+                    int_csr_mret = 0;
+                    // For system CSR instructions, bit 14 indicates if there is an IMM value. 
+                    int_csr_data_sel = instr[14];
+                    ebreak = 0;
+                    ecall = 0;
+                    end
+                endcase
+            end
+            `FENCE_OPCODE: begin
+                reg_write = 0;
+                imm_mux_sel = 0; 
+                internal_alu_a_sel = 1;
+                alu_sel = 3'b000;
+                alu_aux = 0;
+                imm_type    = `B_TYPE;
+                branch_sel = `COMPARE_INV;
+                branch = 0;
+                store = 0;
+                rd_in_sel = 0;
+                load = 0;
+                loc_mem_size = 3'b010;
+                jump = 0;
+                illegal_instruction = 0;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
             default: begin
                 reg_write = 0;
@@ -301,6 +560,13 @@ module decoder (
                 load = 0;
                 loc_mem_size = 3'b010;
                 jump = 0;
+                illegal_instruction = 1;
+                int_csr_control = 0; 
+                int_csr_rw_addr = 0;
+                int_csr_mret = 0;
+                int_csr_data_sel = 0;
+                ebreak = 0;
+                ecall = 0;
             end
         endcase
     end
