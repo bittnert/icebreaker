@@ -10,6 +10,7 @@ module load_store (
     input wr,
     input reset,
     output exception_out,
+    output timer_irq,
     input RX,
     output TX
 );
@@ -17,19 +18,21 @@ module load_store (
     wire [31:0] rom_data, ram_data, uart_data_out, timer_counter;
     wire rom_exception;
     wire ram_exception;
+    wire int_timer_irq;
     wire [7:0] uart_data_in;
     wire uart_en, ram_en, rom_en, timer_en;
     reg last_uart_en, last_ram_en, last_rom_en, last_timer_en;
     wire [3:0] ram_mask; 
     assign uart_en = (en && (addr[31:24] == 8'h02));
-    assign ram_en = (en && (addr[31:24] == 8'h01));
+    assign ram_en = (en && (addr[31:24] == 8'h80));
+    //assign ram_en = (en && (addr[31:24] == 8'h01));
     assign rom_en = (en && (addr[31:24] == 8'h00));
     assign timer_en = (en && (addr[31:24] == 8'h03));
     assign exception_out = (rom_exception || ram_exception);
     assign data_out = (last_ram_en && !wr)? ram_data : (last_uart_en && !wr)? uart_data_out : (last_rom_en) ? rom_data: (last_timer_en)? timer_counter : 32'h00000000;
     assign ram_mask = (ram_en) ? 4'hF: 4'h0;
     //assign data_out = uart_data_out;
-
+    assign timer_irq = int_timer_irq;
     always @(posedge CLK) begin
         last_ram_en <= ram_en;
         last_uart_en <= uart_en;
@@ -93,7 +96,16 @@ module load_store (
         .RX(RX)
     );
 
+/*
     timer timer (.CLK(CLK),
                 .rst(reset),
                 .counter_out(timer_counter));
+                */
+    mtime timer (.CLK(CLK),
+                .rst_n(reset),
+                .wr_en(wr && timer_en),
+                .addr(addr[3:2]),
+                .irq(int_timer_irq),
+                .data_out(timer_counter),
+                .data_in(data_in));
 endmodule

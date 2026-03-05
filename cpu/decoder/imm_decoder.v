@@ -5,7 +5,7 @@
 module imm_decoder(
     input[31:0] instr,
     output reg [31:0] imm_value,
-    input [2:0] instr_type
+    input [3:0] instr_type
 );
 
 /*lint_on UNUSEDSIGNAL*/
@@ -26,6 +26,9 @@ always @(*) begin
     end
     `J_TYPE: begin
         imm_value = {{12{instr[31]}}, instr[19:12], instr[20], instr[30:25], instr[24:21], 1'b0};
+    end
+    `SYS_TYPE: begin
+        imm_value = {27'b0, instr[19:15]};
     end
     default: begin
         imm_value = 32'b0;

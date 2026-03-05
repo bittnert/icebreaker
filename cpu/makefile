@@ -17,6 +17,8 @@ V_SRC := cpu.v \
 		compare/compare.v \
 		load_store/load_store.v \
 		rom/rom.v \
+		csr/csr.v \
+		trap_handler/trap_handler.v \
 		../uart/uart.v \
 		../uart/uart_mem_interface.v \
 		../uart/uart_fifo.v \
@@ -25,7 +27,7 @@ V_SRC := cpu.v \
 		../uart/uart_baud_gen.v \
 		../utils/fifo.v \
 		../utils/seven_seg.v \
-		../timer/timer.v 
+		../timer/mtime.v 
 
 SIM_V_SRC := simulation/SB_MAC16.v
 

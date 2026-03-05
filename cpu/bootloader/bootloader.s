@@ -10,12 +10,12 @@
 # 1. Displays a welcome message via UART
 # 2. Prompts user to enter the size of the program image to load
 # 3. Receives the size parameter as decimal input
-# 4. Loads the specified number of bytes from UART into RAM starting at 0x01000000
-# 5. Jumps to the loaded program at 0x01000000 to begin execution
+# 4. Loads the specified number of bytes from UART into RAM starting at ram_start
+# 5. Jumps to the loaded program at ram_start to begin execution
 #
 # Key components:
 # - UART communication (0x02000000): For sending/receiving data
-# - RAM storage (0x01000000): Target location for loaded program
+# - RAM storage (ram_start): Target location for loaded program
 # - Register usage: Carefully managed to avoid stack requirements
 #
 # The bootloader includes utility functions for:
@@ -30,11 +30,13 @@
     .align 2  # aligns to 4 bytes (2^2)
 .global _start
 _start:
+    la a0, exception_handler
+    csrw mtvec, a0 # set the exception handler address in mtvec
     la a0, hello_string # load the address of the string into a0
     jal send_string # jump to send_string to print welcome message
 
     # li s2, RAM_START
-    li s2, 0x01000000
+    la s2, ram_start # 0x01000000
     /* index of the current byte to store */
     li s3, 0
     /* new line character */
@@ -49,7 +51,7 @@ _start:
     call load_image
     # la a0, image_loaded_string
     # jal ra, send_string
-    li t0, 0x01000000
+    la t0, ram_start # 0x01000000
     jalr zero, 0(t0)
 
 
@@ -162,7 +164,7 @@ decimal_print:
     ret
 
 load_image:
-    li s0, 0x01000000
+    la s0, ram_start
     # li s1, 0x1FFFF # mask address, we only support up to 128 kbytes
     li s1, 0xFFFFFF # mask address, we support up to 16 Mbytes to support simulation
     mv s2, a0 # store expected size of image
@@ -178,7 +180,7 @@ image_load_loop:
 
 
 read_back:
-    li s0, 0x01000000
+    la s0, ram_start
     # li s1, 0x1FFFF # mask address, we only support up to 128 kbytes
     li s1, 0xFFFFFF # mask address, we support up to 16 Mbytes to support simulation
     mv s2, a0 # store expected size of image
@@ -198,6 +200,10 @@ image_read_back_word_loop:
     mv ra, s4
     ret
 
+exception_handler:
+    # Save context
+    j exception_handler
+    mret
 
 .section .rodata
 hello_string:

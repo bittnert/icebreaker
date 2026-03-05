@@ -1,12 +1,15 @@
 
 
 
-`define R_TYPE 3'b000
-`define I_TYPE 3'b001
-`define S_TYPE 3'b010
-`define B_TYPE 3'b011
-`define U_TYPE 3'b100
-`define J_TYPE 3'b101
+`define R_TYPE 4'b0000
+`define I_TYPE 4'b0001
+`define S_TYPE 4'b0010
+`define B_TYPE 4'b0011
+`define U_TYPE 4'b0100
+`define J_TYPE 4'b0101
+// This is not defined in the standard but system instructions (CSR) require their own type of IMM value
+`define SYS_TYPE 4'b1000
+
 
 
 `define ALU_ADD 3'b000
@@ -36,6 +39,8 @@
 `define JALR_OPCODE    7'b1100111
 `define STORE_OPCODE    7'b0100011
 `define LOAD_OPCODE    7'b0000011
+`define SYSTEM_OPCODE    7'b1110011
+`define FENCE_OPCODE    7'b0001111
 
 `define ROM_SIZE    32'h400
 `define RAM_SIZE    32'h1000
@@ -47,7 +52,7 @@
 `define REG_EN_BASE         (`JUMP_EN_BASE + `JUMP_EN_SIZE)
 `define REG_EN_WIDTH        1
 `define REG_IN_SEL_BASE     (`REG_EN_BASE + `REG_EN_WIDTH)
-`define REG_IN_SEL_WIDTH    2 
+`define REG_IN_SEL_WIDTH    3 
 `define WRITE_BACK_SIZE     (`REG_IN_SEL_BASE + `REG_IN_SEL_WIDTH)
 `define MEM_EN_BASE         `WRITE_BACK_SIZE
 `define MEM_EN_WIDTH        1

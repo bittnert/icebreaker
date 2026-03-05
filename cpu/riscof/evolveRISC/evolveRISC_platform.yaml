@@ -1,9 +1,9 @@
 mtime:
   implemented: false
-  address: 0xbff8
+  address: 0x01000000
 mtimecmp:
   implemented: false
-  address: 0x4000
+  address: 0x01000008
 nmi:
   label: nmi_vector
 reset:

@@ -124,7 +124,7 @@ module memory
     end
 
     always @ (*) begin
-        if (wr && en) begin
+        if (wr && en && !exception) begin
             case (size)
                 3'b000: begin
                     shift_wr = 2*addr[1:0];
@@ -207,7 +207,7 @@ module memory
     assign shift = 8*addr[1:0];
     assign mask = (size[1:0] == 2'b00) ? 32'hFF << shift : (size[1:0] == 2'b01) ? 32'hFFFF << shift: 32'hFFFFFFFF;
     //assign data_out = ({data_out_high, data_out_low} & mask) >> shift;
-    assign exception = (en && ((size == 3'b010 && addr[1:0] != 0) || (size == 3'b011) || (size == 3'b001 && (addr[1:0] == 1 || addr[1:0] == 3))))? 1 : 0;
+    assign exception = (en && ((size == 3'b010 && addr[1:0] != 0) || (size == 3'b011) || (size[1:0] == 2'b01 && (addr[1:0] == 1 || addr[1:0] == 3))))? 1 : 0;
 
 endmodule
 
