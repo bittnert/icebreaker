@@ -15,6 +15,8 @@ EvolveRISC is an educational RISC-V CPU implementation that evolves from a simpl
 The current implementation is a simple RISC-V CPU with:
 
 - RV32I base integer instruction set support
+- Zicsr instruction set support
+- Support for exceptions and interrupts (currently there are no interrupt sources)
 - Multi-cycle execution model (5 cycles per instruction)
 - State machine-based control flow (Fetch, Decode, Execute, Memory, Writeback)
 - Pipeline stages: Fetch, Decode, Execute, Memory, Writeback
@@ -28,15 +30,15 @@ Metrics of the current implementation:
 
 - **CPI (Cycles Per Instruction)**: 5
 - **IPC (Instructions Per Cycle)**: 0.2
-- **Clock frequency**: 20.73 MHz
+- **Clock frequency**: 17.26 MHz
 - **Resource utilization**:
  
 | Resource | Used | Available | Utilization |
 |----------|------|-----------|-------------|
-| ICESTORM_LC | 2841 | 5280 | 53% |
+| ICESTORM_LC | 4122 | 5280 | 78% |
 | ICESTORM_RAM | 6 | 30 | 20% |
 | SB_IO | 4 | 96 | 4% |
-| SB_GB | 6 | 8 | 75% |
+| SB_GB | 8 | 8 | 100% |
 | ICESTORM_PLL | 0 | 1 | 0% |
 | SB_WARMBOOT | 0 | 1 | 0% |
 | ICESTORM_DSP | 0 | 8 | 0% |
@@ -70,7 +72,7 @@ Measured at 12 MHz clock frequency.
 - [ ] Update CPU to allow for delayed read and write operations (to allow more complex perfipherals)
 - [ ] Add hazard control to enable true pipelined execution
 - [x] Update RISC-V Architecture test suite to run in simulation
-- [ ] Add interrupt support
+- [x] Add interrupt support
 - [x] Add first benchmarks to measure performance
 - [x] Add load/store unit to have different memories and peripherals
 - [x] Change main memory to use Single port SRAM instead of Embedded block RAM
