@@ -1,0 +1,132 @@
+{
+    "signal": [
+        {
+            "name": "Cycle",
+            "wave": "=========",
+            "data": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
+            ]
+        },
+        {
+            "name": "CLK",
+            "width": 1,
+            "wave": "p........"
+        },
+        {
+            "name": "PC",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "0",
+                "4",
+                "8",
+                "C",
+                "F0",
+                "F4",
+                "F8"
+            ]
+        },
+        {
+            "name": "nPC",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "4",
+                "8",
+                "C",
+                "10",
+                "F4",
+                "F8",
+                "FC"
+            ]
+        },
+        {
+            "name": "Fetch Stage",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "XXX",
+                "Add",
+                "Sub",
+                "Add",
+                "---"
+            ]
+        },
+        {
+            "name": "Decode Stage",
+            "width": 32,
+            "wave": "x3456789x",
+            "data": [
+                "XXX",
+                "Add",
+                "Sub",
+                "---",
+                "---"
+            ]
+        },
+        {
+            "name": "Execute Stage",
+            "width": 32,
+            "wave": "x.3456789",
+            "data": [
+                "XXX",
+                "Add",
+                "---",
+                "---",
+                "---"
+            ]
+        },
+        {
+            "name": "Memory Stage",
+            "width": 32,
+            "wave": "x..345678",
+            "data": [
+                "XXX",
+                "---",
+                "---",
+                "---",
+                "---"
+            ]
+        },
+        {
+            "name": "Writeback Stage",
+            "width": 32,
+            "wave": "x...34567",
+            "data": [
+                "XXX",
+                "---",
+                "---",
+                "---",
+                "---"
+            ]
+        },
+        {
+            "name": "Decode Stage Exception Pending",
+            "width": 1,
+            "wave": "010......"
+        },
+        {
+            "name": "Execute Stage Exception Pending",
+            "width": 1,
+            "wave": "0.10....."
+        },
+        {
+            "name": "Memory Stage Exception Pending",
+            "width": 1,
+            "wave": "0..10...."
+        },
+        {
+            "name": "Exception taken",
+            "width": 1,
+            "wave": "0..10...."
+        }
+    ]
+}

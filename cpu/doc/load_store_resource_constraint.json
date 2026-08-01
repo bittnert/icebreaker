@@ -1,0 +1,117 @@
+{
+    "signal": [
+        {
+            "name": "Cycle",
+            "wave": "=========",
+            "data": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
+            ]
+        },
+        {
+            "name": "CLK",
+            "width": 1,
+            "wave": "p........"
+        },
+        {
+            "name": "PC",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "0",
+                "4",
+                "8",
+                "C",
+                "C",
+                "10",
+                "14"
+            ]
+        },
+        {
+            "name": "nPC",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "4",
+                "8",
+                "C",
+                "10",
+                "10",
+                "14",
+                "18"
+            ]
+        },
+        {
+            "name": "Fetch Stage",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "Load",
+                "Add",
+                "Sub",
+                "---",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Decode Stage",
+            "width": 32,
+            "wave": "x3456789x",
+            "data": [
+                "Load",
+                "Add",
+                "Sub",
+                "---",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Execute Stage",
+            "width": 32,
+            "wave": "x.3456789",
+            "data": [
+                "Load",
+                "Add",
+                "Sub",
+                "---",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Memory Stage",
+            "width": 32,
+            "wave": "x..345678",
+            "data": [
+                "Load",
+                "Add",
+                "Sub",
+                "---",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Writeback Stage",
+            "width": 32,
+            "wave": "x...34567",
+            "data": [
+                "Load",
+                "Add",
+                "Sub",
+                "---",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Instruction fetch ACK",
+            "width": 3,
+            "wave": "1..01...."
+        }
+    ]
+}

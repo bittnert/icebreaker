@@ -1,0 +1,117 @@
+{
+    "signal": [
+        {
+            "name": "Cycle",
+            "wave": "=========",
+            "data": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
+            ]
+        },
+        {
+            "name": "CLK",
+            "width": 1,
+            "wave": "p........"
+        },
+        {
+            "name": "PC",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "0",
+                "4",
+                "8",
+                "F0",
+                "F4"
+            ]
+        },
+        {
+            "name": "nPC",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "4",
+                "8",
+                "C",
+                "10",
+                "F4"
+            ]
+        },
+        {
+            "name": "Fetch Stage",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "BEQ",
+                "Add",
+                "---",
+                "Add",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Decode Stage",
+            "width": 32,
+            "wave": "x3456789x",
+            "data": [
+                "BEQ",
+                "---",
+                "---",
+                "Add",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Execute Stage",
+            "width": 32,
+            "wave": "x.3456789",
+            "data": [
+                "BEQ",
+                "---",
+                "---",
+                "Add",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Memory Stage",
+            "width": 32,
+            "wave": "x..345678",
+            "data": [
+                "BEQ",
+                "---",
+                "---",
+                "Add",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Writeback Stage",
+            "width": 32,
+            "wave": "x...34567",
+            "data": [
+                "BEQ",
+                "---",
+                "---",
+                "Add",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Branch Taken",
+            "width": 1,
+            "wave": "0.10....."
+        },
+        {
+            "name": "Flush",
+            "wave": "0.10....."
+        }
+    ]
+}

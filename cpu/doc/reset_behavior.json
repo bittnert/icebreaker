@@ -1,0 +1,53 @@
+{
+    "signal":[
+        {
+            "name":"Cycle",
+            "wave":"x========",
+            "data":["0","1","2","3","4","5","6","7","8"]
+        },
+        {
+            "name":"RST",
+            "wave":"01........",
+            "phase":0.4
+        },
+        {
+            "name":"CLK",
+            "wave":"n........"
+        },
+        {
+            "name":"PC",
+            "wave":"x3.45678",
+            "data": ["0","4","8","C","10","14"]
+        },
+        {
+            "name":"nPC",
+            "wave":"x3456789",
+            "data":["0","4","8","C","10","14","18"]
+        },
+        {
+            "name":"Fetch stage",
+            "wave":"x=345678",
+            "data":["NOP","Add","Sub"]
+        },
+        {
+            "name":"Decode Stage",
+            "wave":"x==34567",
+            "data":["NOP","NOP","add","sub"]
+        },
+        {
+            "name":"Execute Stage",
+            "wave":"x===3456",
+            "data":["NOP","NOP","NOP","add","sub"]
+        },
+        {
+            "name":"Memory Stage",
+            "wave":"x====345",
+            "data":["NOP","NOP","NOP","NOP","add","sub"]
+        },
+        {
+            "name":"Write Back stage",
+            "wave":"x=====34",
+            "data":["NOP","NOP","NOP","NOP","NOP","add","sub"]
+        }
+    ]
+}

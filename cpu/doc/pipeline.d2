@@ -1,0 +1,40 @@
+vars: {
+  d2-config: {
+    layout-engine: ELK
+  }
+}
+
+direction: right
+
+# Parent System Block
+CPU: {
+  Fetch: {
+    InstrMUX: "Instruction MUX"
+    nPC_mux: "Next PC MUX"
+    register: "Pipeline Register"
+
+    MemoryBus -> InstrMUX: "Instruction"
+    ReadDone -> InstrMUX: "Read Done"
+    NOP -> InstrMUX
+
+    PC + 4 -> nPC_mux: "PC + 4"
+    branch_target -> nPC_mux: "Branch Target Address"
+    branch_taken -> nPC_mux: "Branch Taken"
+    nPC_mux -> register: "Next PC"
+    register -> PC + 4: "PC + 4"
+  }
+
+  Decode: {
+    decoder: "Decoder"
+  }
+
+  Execute
+
+  Memory: {
+    LoadStoreUnit: "Load/Store Unit"
+  }
+
+  WriteBack
+
+  Fetch.InstrMUX -> Decode.decoder: "Instruction"
+}

@@ -8,7 +8,7 @@ PACKAGE:="sg48"
 CXXFLAGS += -std=gnu++20
 
 %.sim: $(SIM_SRC) %_tb.cpp  %.a $(TOP).a 
-	$(CXX) $(CXXFLAGS) $(addprefix -I, $(INC_DIR)) -g -DTRACE_EXECUTION  $^ -o $*.sim -lz
+	$(CXX) $(CXXFLAGS) $(addprefix -I, $(INC_DIR)) -g -DTRACE_EXECUTION  $^ -o $*.sim -lz -llz4
 #	./$*.sim
 #	gtkwave $*.sim.vcd
 	
@@ -31,7 +31,7 @@ CXXFLAGS += -std=gnu++20
 	riscv64-linux-gnu-as $^ -o $@
 
 %.json: $(V_SRC) #$(MEM_FILE)
-		yosys -ql $*.log -p 'synth_ice40 -abc9 -dsp -spram -top $* -json $@' $^
+		yosys -ql $*.log -p 'read_verilog -sv -defer $^; synth_ice40 -abc9 -dsp -spram -top $* -json $@'
 
 %.asc: $(PIN_DEF) %.json
 	nextpnr-ice40 --$(DEVICE) $(if $(PACKAGE), --package $(PACKAGE)) $(if $(FREQ),--freq $(FREQ)) --json $(filter-out $<,$^) --pcf $< --asc $@

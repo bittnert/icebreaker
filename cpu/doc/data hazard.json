@@ -1,0 +1,123 @@
+{
+    "signal": [
+        {
+            "name": "Cycle",
+            "wave": "=========",
+            "data": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8"
+            ]
+        },
+        {
+            "name": "CLK",
+            "width": 1,
+            "wave": "p........"
+        },
+        {
+            "name": "PC",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "0",
+                "4",
+                "4",
+                "4",
+                "4",
+                "8",
+                "C"
+            ]
+        },
+        {
+            "name": "nPC",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "4",
+                "8",
+                "8",
+                "8",
+                "8",
+                "C",
+                "10"
+            ]
+        },
+        {
+            "name": "Fetch Stage",
+            "width": 32,
+            "wave": "3456789x.",
+            "data": [
+                "Add",
+                "Sub",
+                "Sub",
+                "Sub",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Decode Stage",
+            "width": 32,
+            "wave": "x3456789x",
+            "data": [
+                "Add",
+                "NOP",
+                "NOP",
+                "NOP",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Execute Stage",
+            "width": 32,
+            "wave": "x.3456789",
+            "data": [
+                "Add",
+                "NOP",
+                "NOP",
+                "NOP",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Memory Stage",
+            "width": 32,
+            "wave": "x..345678",
+            "data": [
+                "Add",
+                "NOP",
+                "NOP",
+                "NOP",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Writeback Stage",
+            "width": 32,
+            "wave": "x...34567",
+            "data": [
+                "Add",
+                "NOP",
+                "NOP",
+                "NOP",
+                "Sub"
+            ]
+        },
+        {
+            "name": "Stall counter",
+            "width": 3,
+            "wave": "0.34560..",
+            "data": [
+                "0b100",
+                "0b010",
+                "0b001",
+                "0b000"
+            ]
+        }
+    ]
+}
